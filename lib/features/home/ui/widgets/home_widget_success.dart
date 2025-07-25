@@ -2,15 +2,15 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/di/dependency_injection.dart';
-import '../../../auth/data/models/app_user.dart';
-import '../../../auth/data/repo/firebase_auth_repo.dart';
 import '../../../auth/logic/auth/auth_cubit.dart';
 import '../../data/models/product_model.dart';
+import '../../enums/sort_by_enum.dart';
+import '../../enums/view_mode_enum.dart';
 import '../../service/product_filter_service.dart';
 import '../poduct_detail_page.dart';
 import 'build_category_card.dart';
-import 'product_card.dart';
+import 'product_card_grid_tile.dart';
+import 'product_card_list_tile.dart';
 
 class HomeWidgetSuccess extends StatefulWidget {
   const HomeWidgetSuccess({super.key, required this.products});
@@ -21,6 +21,8 @@ class HomeWidgetSuccess extends StatefulWidget {
 }
 
 class _HomeWidgetSuccessState extends State<HomeWidgetSuccess> {
+  final ValueNotifier<ViewMode> _viewModeNotifier =
+      ValueNotifier(ViewMode.grid);
   final Map<String, List<ProductModel>> groupedByCategory = {};
   late final List<String> _categoryKeys;
 
@@ -59,18 +61,9 @@ class _HomeWidgetSuccessState extends State<HomeWidgetSuccess> {
     },
   ];
 
-  AppUser? currentUser;
-
-  Future<void> loadUser() async {
-    final firebaseRepo = getIt<FirebaseRepo>();
-    currentUser = await firebaseRepo.getCurrentUser();
-    setState(() {});
-  }
-
   @override
   void initState() {
     super.initState();
-    loadUser();
     for (var product in widget.products) {
       final categoryName = product.category.name;
       groupedByCategory.putIfAbsent(categoryName, () => []);
@@ -79,27 +72,11 @@ class _HomeWidgetSuccessState extends State<HomeWidgetSuccess> {
     _categoryKeys = groupedByCategory.keys.toList();
   }
 
-  // customAnimationAppbar(
-  //   context: context,
-  //   image: currentUser?.photoUrl ?? '',
-  //   title: currentUser?.displayName ?? 'Guest',
-  //   descripton: currentUser?.email ?? '',
-  //   isActions: true,
-  //   actions: [
-  //     IconButton(
-  //       icon: const Icon(Icons.search),
-  //       onPressed: () {
-  //         // Search action
-  //       },
-  //     ),
-  //     IconButton(
-  //       icon: const Icon(Icons.logout),
-  //       onPressed: () async {
-  //         await context.read<AuthCubit>().logout();
-  //       },
-  //     ),
-  //   ],
-  // ),
+  @override
+  void dispose() {
+    _viewModeNotifier.dispose();
+    super.dispose();
+  }
 
   void _navigateToRelatedProducts(ProductModel selectedProduct) {
     final categoryName = selectedProduct.category.name;
@@ -131,20 +108,27 @@ class _HomeWidgetSuccessState extends State<HomeWidgetSuccess> {
             shadowColor: Colors.black.withAlpha(10),
             surfaceTintColor: Colors.transparent,
             title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Icon(
-                  Icons.storefront,
-                  color: Colors.deepPurple,
-                  size: 28,
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.storefront,
+                      color: Colors.deepPurple,
+                      size: 28,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Shopify',
+                      style:
+                          Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.deepPurple,
+                              ),
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 8),
-                Text(
-                  'Shopify',
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.deepPurple,
-                      ),
-                ),
+                _buildViewToggleButton(),
               ],
             ),
             actions: [
@@ -153,13 +137,6 @@ class _HomeWidgetSuccessState extends State<HomeWidgetSuccess> {
                 tooltip: 'Search',
                 onPressed: () {
                   // Search action
-                },
-              ),
-              IconButton(
-                icon: const Icon(Icons.logout),
-                tooltip: 'Logout',
-                onPressed: () async {
-                  await context.read<AuthCubit>().logout();
                 },
               ),
             ],
@@ -245,54 +222,181 @@ class _HomeWidgetSuccessState extends State<HomeWidgetSuccess> {
                 horizontal: 16.0,
                 vertical: 8.0,
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Featured Products',
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleMedium
-                        ?.copyWith(fontWeight: FontWeight.bold),
-                  ),
-                  DropdownButton<SortBy>(
-                    value: _selectedSort,
-                    onChanged: (SortBy? newValue) {
-                      if (newValue != null) {
-                        setState(() {
-                          _selectedSort = newValue;
-                        });
-                      }
-                    },
-                    items: SortBy.values.map((sort) {
-                      return DropdownMenuItem(
-                        value: sort,
-                        child: Text(sort.label),
-                      );
-                    }).toList(),
-                    underline: SizedBox.shrink(),
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                ],
-              ),
-            ),
-          ),
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            sliver: SliverList(
-              delegate: SliverChildBuilderDelegate(
-                childCount: _filteredProducts.length,
-                (context, index) {
-                  final product = _filteredProducts[index];
-                  return GestureDetector(
-                    onTap: () => _navigateToRelatedProducts(product),
-                    child: ProductCard(product: product),
+              child: ValueListenableBuilder<ViewMode>(
+                valueListenable: _viewModeNotifier,
+                builder: (context, viewMode, _) {
+                  return AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Featured Products',
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium
+                              ?.copyWith(fontWeight: FontWeight.bold),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: Colors.grey[300]!),
+                          ),
+                          child: DropdownButton<SortBy>(
+                            value: _selectedSort,
+                            onChanged: (SortBy? newValue) {
+                              if (newValue != null) {
+                                setState(() {
+                                  _selectedSort = newValue;
+                                });
+                              }
+                            },
+                            items: SortBy.values.map((sort) {
+                              return DropdownMenuItem(
+                                value: sort,
+                                child: Text(sort.label),
+                              );
+                            }).toList(),
+                            underline: const SizedBox.shrink(),
+                            style: Theme.of(context).textTheme.bodyMedium,
+                            icon: const Icon(Icons.sort, size: 16),
+                          ),
+                        ),
+                      ],
+                    ),
                   );
                 },
               ),
             ),
           ),
+          ValueListenableBuilder<ViewMode>(
+            valueListenable: _viewModeNotifier,
+            builder: (context, viewMode, _) {
+              return SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                sliver: viewMode == ViewMode.list
+                    ? SliverList(
+                        key: const ValueKey('list_view'),
+                        delegate: SliverChildBuilderDelegate(
+                          childCount: _filteredProducts.length,
+                          (context, index) {
+                            final product = _filteredProducts[index];
+                            return TweenAnimationBuilder<double>(
+                              duration:
+                                  Duration(milliseconds: 300 + (index * 50)),
+                              tween: Tween(begin: 0.0, end: 1.0),
+                              curve: Curves.easeOutBack,
+                              builder: (context, value, child) {
+                                return Transform.translate(
+                                  offset: Offset(0, 20 * (1 - value)),
+                                  child: Opacity(
+                                    opacity: value.clamp(0.0, 1.0),
+                                    child: child,
+                                  ),
+                                );
+                              },
+                              child: GestureDetector(
+                                onTap: () =>
+                                    _navigateToRelatedProducts(product),
+                                child: Container(
+                                  margin: const EdgeInsets.only(bottom: 8),
+                                  child: ProductCardListTile(product: product),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      )
+                    : SliverGrid(
+                        key: const ValueKey('grid_view'),
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                            final product = _filteredProducts[index];
+                            return TweenAnimationBuilder<double>(
+                              duration:
+                                  Duration(milliseconds: 300 + (index * 30)),
+                              tween: Tween(begin: 0.0, end: 1.0),
+                              curve: Curves.easeOutBack,
+                              builder: (context, value, child) {
+                                return Transform.scale(
+                                  scale: 0.8 + (0.2 * value),
+                                  child: Opacity(
+                                    opacity: value.clamp(0.0, 1.0),
+                                    child: child,
+                                  ),
+                                );
+                              },
+                              child: GestureDetector(
+                                onTap: () =>
+                                    _navigateToRelatedProducts(product),
+                                child: ProductCardGridTile(product: product),
+                              ),
+                            );
+                          },
+                          childCount: _filteredProducts.length,
+                        ),
+                        gridDelegate:
+                            const SliverGridDelegateWithMaxCrossAxisExtent(
+                          maxCrossAxisExtent: 200,
+                          mainAxisSpacing: 12,
+                          crossAxisSpacing: 12,
+                          childAspectRatio: 0.6,
+                        ),
+                      ),
+              );
+            },
+          ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildViewToggleButton() {
+    return ValueListenableBuilder<ViewMode>(
+      valueListenable: _viewModeNotifier,
+      builder: (context, viewMode, _) => AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: viewMode == ViewMode.grid
+              ? Colors.deepPurple.withAlpha(10)
+              : Colors.blue.withAlpha(10),
+        ),
+        child: IconButton(
+          icon: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            transitionBuilder: (Widget child, Animation<double> animation) {
+              return RotationTransition(
+                turns: animation,
+                child: ScaleTransition(
+                  scale: animation,
+                  child: child,
+                ),
+              );
+            },
+            child: Icon(
+              viewMode == ViewMode.grid
+                  ? Icons.view_list_rounded
+                  : Icons.grid_view_rounded,
+              key: ValueKey(viewMode),
+              color:
+                  viewMode == ViewMode.grid ? Colors.deepPurple : Colors.blue,
+            ),
+          ),
+          onPressed: () {
+            // Add haptic feedback for better UX
+            if (Theme.of(context).platform == TargetPlatform.iOS) {
+              // Light impact for iOS
+            }
+            _viewModeNotifier.value =
+                viewMode == ViewMode.grid ? ViewMode.list : ViewMode.grid;
+          },
+          tooltip: viewMode == ViewMode.grid
+              ? 'Switch to List View'
+              : 'Switch to Grid View',
+        ),
       ),
     );
   }

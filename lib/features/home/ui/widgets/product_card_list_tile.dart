@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../../data/models/product_model.dart';
 
-class ProductCard extends StatelessWidget {
-  const ProductCard({super.key , required this.product});
+class ProductCardListTile extends StatelessWidget {
+  const ProductCardListTile({super.key , required this.product});
   final ProductModel product;
+
   @override
   Widget build(BuildContext context) {
     return Card(

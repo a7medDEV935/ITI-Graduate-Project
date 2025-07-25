@@ -1,12 +1,6 @@
 import 'package:flutter/material.dart';
 import '../data/models/product_model.dart';
-
-enum SortBy {
-  aToZ,
-  zToA,
-  priceDescending,
-  priceAscending,
-}
+import '../enums/sort_by_enum.dart';
 
 extension SortByExtension on SortBy {
   String get label {
@@ -79,3 +73,4 @@ class ProductSortDropdown extends StatelessWidget {
     );
   }
 }
+

@@ -12,9 +12,29 @@ import 'features/auth/ui/login_or_register.dart';
 import 'features/splash/ui/splash_screen.dart';
 import 'features/home/ui/home_screen.dart';
 
-class RootApp extends StatelessWidget {
+class RootApp extends StatefulWidget {
   const RootApp({super.key, required this.nextScreen});
   final Widget nextScreen;
+
+  @override
+  State<RootApp> createState() => _RootAppState();
+}
+
+class _RootAppState extends State<RootApp> {
+  late ThemeMode _themeMode;
+
+  @override
+  void initState() {
+    super.initState();
+    _themeMode = getIt<ThemeCubit>().state;
+    getIt<ThemeCubit>().stream.listen((themeMode) {
+      if (mounted) {
+        setState(() {
+          _themeMode = themeMode;
+        });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,8 +43,8 @@ class RootApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: lightMode,
       darkTheme: darkMode,
-      themeMode: getIt<ThemeCubit>().state,
-      home: SplashScreen(nexScreen: nextScreen),
+      themeMode: _themeMode,
+      home: SplashScreen(nexScreen: widget.nextScreen),
     );
   }
 }

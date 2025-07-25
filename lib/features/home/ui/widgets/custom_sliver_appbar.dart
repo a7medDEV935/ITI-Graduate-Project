@@ -12,10 +12,8 @@ SliverAppBar customAnimationAppbar({
     pinned: true,
     backgroundColor: Colors.grey.shade900,
     elevation: 0,
-    expandedHeight: MediaQuery.of(context).size.height / 5,
-    actions: isActions
-        ? actions
-        : null, // Use actions if isActions is true
+    expandedHeight: MediaQuery.of(context).size.height / 4.7,
+    actions: isActions ? actions : null, // Use actions if isActions is true
     flexibleSpace: LayoutBuilder(
       builder: (context, constraints) {
         final isCompact = constraints.maxHeight < 140;
@@ -29,15 +27,15 @@ SliverAppBar customAnimationAppbar({
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       SizedBox(
-                        height: 35,
-                        width: 35,
+                        height: 55,
+                        width: 55,
                         child: image.isEmpty
                             ? CircleAvatar(
-                                radius: 35,
+                                radius: 55,
                                 child: Icon(Icons.person),
                               )
                             : CircleAvatar(
-                                radius: 35,
+                                radius: 55,
                                 backgroundImage: NetworkImage(image),
                               ),
                       ),
@@ -116,7 +114,7 @@ class _AnimatedRowScreenState extends State<AnimatedRowScreen>
       child: FadeTransition(
         opacity: _fadeAnimation,
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             const SizedBox(width: 15),

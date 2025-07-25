@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/widgets/sliding_clipped_navbar.dart';
+import '../../../core/widgets/salomon_bottom_bar.dart';
 import 'widgets/home_widget.dart';
+import 'widgets/profile_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -18,12 +19,12 @@ class _HomeScreenState extends State<HomeScreen> {
       HomeWidget(),
       const Center(child: Text("Screen 2")),
       const Center(child: Text("Screen 3")),
-      const Center(child: Text("Screen 4")),
+      ProfileWidget(),
     ];
 
     return Scaffold(
       body: screens[_selectedIndex],
-      bottomNavigationBar: CustomSlidingNavbar(
+      bottomNavigationBar: CustomSalomonBottomBar(
         selectedIndex: _selectedIndex,
         onTabChange: (index) {
           setState(() {

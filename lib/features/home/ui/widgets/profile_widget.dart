@@ -1,11 +1,14 @@
+import 'package:final_project/core/helpers/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/constants/app_strings.dart';
 import '../../../../core/theme/cubit/theme/theme_cubit.dart';
 import '../../../auth/logic/auth/auth_cubit.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../auth/data/models/app_user.dart';
 import '../../../auth/data/repo/firebase_auth_repo.dart';
+import '../../logic/notifications/notification_cubit.dart';
 import 'custom_sliver_appbar.dart';
 
 class ProfileWidget extends StatefulWidget {
@@ -32,14 +35,15 @@ class _SettingsScreenState extends State<ProfileWidget> {
     loadUser();
   }
 
-  // final List<String> _languages = LanguageNames.supported;
-  // final List<String> _languagesFlags = LanguageFlags.supported;
+  final List<String> _languages = LanguageNames.supported;
+  final List<String> _languagesFlags = LanguageFlags.supported;
 
   @override
   Widget build(BuildContext context) {
     bool darkModeEnabled = context.watch<ThemeCubit>().state == ThemeMode.dark;
     // String language = localeNamesMap[context.locale.toString()] ??
     // LanguageNames.defaultLocale;
+    String language = LanguageNames.defaultLocale;
     return SafeArea(
       child: CustomScrollView(
         slivers: <Widget>[
@@ -81,10 +85,11 @@ class _SettingsScreenState extends State<ProfileWidget> {
                       icon: Icons.notifications_outlined,
                       title: 'Notifications',
                       subtitle: 'Enable Push Notifications',
-                      // value: context.watch<AppCubit>().isNotificationEnabled,
-                      value: true,
+                      value: context
+                          .watch<NotificationCubit>()
+                          .isNotificationEnabled,
                       onChanged: (value) {
-                        // context.read<AppCubit>().toggleNotifications();
+                        context.read<NotificationCubit>().toggleNotifications();
                       },
                     ),
                     _buildSwitchTile(
@@ -116,9 +121,8 @@ class _SettingsScreenState extends State<ProfileWidget> {
                       _buildDropdownTile(
                         icon: Icons.language,
                         title: 'language',
-                        value: 'language',
-                        items: [],
-                        // items: _languages,
+                        value: language,
+                        items: _languages,
                         isFlagShow: true,
                         onChanged: (value) {
                           // if (value == null ||
@@ -141,15 +145,13 @@ class _SettingsScreenState extends State<ProfileWidget> {
                       icon: Icons.help_outline,
                       title: 'Help & Support',
                       subtitle: 'Get help and support for any issues',
-                      onTap: () {
-                        // Navigate to help
-                      },
+                      onTap: () => context.push(HelpSupportScreen()),
                     ),
                     _buildSettingsTile(
                       icon: Icons.feedback_outlined,
                       title: 'Send Feedback',
                       subtitle: 'Help us improve the app',
-                      onTap: () {},
+                      onTap: () => context.push(SendFeedbackScreen()),
                     ),
                     _buildSettingsTile(
                       icon: Icons.info_outline,
@@ -319,9 +321,9 @@ class _SettingsScreenState extends State<ProfileWidget> {
               value: item,
               child: Row(
                 children: [
-                  // Text(isFlagShow && _languagesFlags.length > index
-                  //     ? _languagesFlags[index].toFlag
-                  //     : ''),
+                  Text(isFlagShow && _languagesFlags.length > index
+                      ? _languagesFlags[index].toFlag
+                      : ''),
                   const SizedBox(width: 8),
                   Text(item),
                 ],
@@ -341,7 +343,7 @@ class _SettingsScreenState extends State<ProfileWidget> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('about_app'),
+          title: Text('About App'),
           content: const Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -350,7 +352,7 @@ class _SettingsScreenState extends State<ProfileWidget> {
               SizedBox(height: 8),
               Text('Build: 100'),
               SizedBox(height: 8),
-              Text('© 2024 Your Company'),
+              Text('© 2024 Shopify'),
             ],
           ),
           actions: [
@@ -378,25 +380,17 @@ class PrivacyScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16.0),
         children: [
-          _buildSectionHeader('account_privacy'),
-          _buildPrivacyTile(
-            icon: Icons.visibility_off,
-            title: 'profile_visibility',
-            subtitle: 'profile_visibility_description',
-            onTap: () => _showPrivacyOptions(context, 'profile_visibility'),
-          ),
-          const SizedBox(height: 12),
-          _buildSectionHeader('legal'),
+          _buildSectionHeader('Legal'),
           _buildPrivacyTile(
             icon: Icons.description,
-            title: 'privacy_policy',
-            subtitle: 'privacy_policy_description',
+            title: 'Privacy Policy',
+            subtitle: 'Read our privacy policy',
             onTap: () => _showPrivacyPolicy(context),
           ),
           _buildPrivacyTile(
             icon: Icons.gavel,
-            title: 'terms_of_service',
-            subtitle: 'terms_of_service_description',
+            title: 'Terms of Service',
+            subtitle: 'View terms and conditions',
             onTap: () => _showTermsOfService(context),
           ),
           const SizedBox(height: 12),
@@ -415,7 +409,7 @@ class PrivacyScreen extends StatelessWidget {
                     Icon(Icons.warning, color: Colors.red[700], size: 20),
                     const SizedBox(width: 8),
                     Text(
-                      'danger_zone',
+                      'Danger Zone',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.red[700],
@@ -430,7 +424,7 @@ class PrivacyScreen extends StatelessWidget {
                     foregroundColor: Colors.red[700],
                     padding: EdgeInsets.zero,
                   ),
-                  child: Text('delete_account'),
+                  child: Text('Delete Account'),
                 ),
               ],
             ),
@@ -472,107 +466,12 @@ class PrivacyScreen extends StatelessWidget {
     );
   }
 
-  void _showPrivacyOptions(BuildContext context, String title) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return Container(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 16),
-              ListTile(
-                leading: const Icon(Icons.public),
-                title: Text('everyone'),
-                trailing: Radio(value: 0, groupValue: 1, onChanged: (value) {}),
-              ),
-              ListTile(
-                leading: const Icon(Icons.people),
-                title: Text('friends_only'),
-                trailing: Radio(value: 1, groupValue: 1, onChanged: (value) {}),
-              ),
-              ListTile(
-                leading: const Icon(Icons.lock),
-                title: Text('only_me'),
-                trailing: Radio(value: 2, groupValue: 1, onChanged: (value) {}),
-              ),
-              const SizedBox(height: 16),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: Colors.black,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                        side: BorderSide(color: Colors.grey.shade300),
-                      ),
-                    ),
-                    onPressed: () {},
-                    child: Text('save_settings'),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
   void _showPrivacyPolicy(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('privacy_policy'),
-          content: const SingleChildScrollView(
-            child: Text(
-              'This is where your privacy policy content would go. It should include information about data collection, usage, storage, and user rights.',
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text('close'),
-            ),
-          ],
-        );
-      },
-    );
+    context.push(PrivacyPolicyScreen());
   }
 
   void _showTermsOfService(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('terms_of_service'),
-          content: const SingleChildScrollView(
-            child: Text(
-              'This is where your terms of service content would go. It should include user agreements, prohibited uses, and service limitations.',
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text('close'),
-            ),
-          ],
-        );
-      },
-    );
+    context.push(TermsOfServiceScreen());
   }
 
   void _showDeleteAccountDialog(BuildContext context) {
@@ -580,9 +479,9 @@ class PrivacyScreen extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('delete_account'),
+          title: Text('Delete Account'),
           content: Text(
-            'delete_account_description',
+            'This will permanently delete your account and all associated data. This action cannot be undone',
           ),
           actions: [
             TextButton(
@@ -592,10 +491,10 @@ class PrivacyScreen extends StatelessWidget {
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
-                _showSnackBar(context, 'delete_account_requested');
+                _showSnackBar(context, 'Account deletion requested');
               },
               style: TextButton.styleFrom(foregroundColor: Colors.red),
-              child: Text('delete_account'),
+              child: Text('Delete Account'),
             ),
           ],
         );
@@ -608,6 +507,503 @@ class PrivacyScreen extends StatelessWidget {
       SnackBar(
         content: Text(message),
         duration: const Duration(seconds: 3),
+      ),
+    );
+  }
+}
+
+class HelpSupportScreen extends StatelessWidget {
+  const HelpSupportScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
+    return Scaffold(
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar.medium(
+            pinned: true,
+            title: const Text("Help & Support"),
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.all(16),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate([
+                Text(
+                  "We're here to help you with any issues or questions.",
+                  style: textTheme.bodyMedium,
+                ),
+                const SizedBox(height: 24),
+                _buildSection(
+                  title: "💡 Frequently Asked Questions",
+                  items: [
+                    "Q: How do I track my order?\nA: Go to My Orders > select your order > Track Order.",
+                    "Q: I forgot my password. What should I do?\nA: Tap 'Forgot Password' on the login screen.",
+                    "Q: How do I request a refund?\nA: Open the order > tap 'Request Refund'.",
+                    "Q: I didn’t receive my item. What now?\nA: Contact support with your order number.",
+                  ],
+                  textTheme: textTheme,
+                ),
+                _buildSection(
+                  title: "📬 Contact Support",
+                  items: [
+                    "Email: support@yourdomain.com",
+                    "Phone: +1-234-567-890",
+                    "Live Chat: Available in-app",
+                    "Working Hours: 9 AM – 6 PM (GMT+3), Sun–Thu",
+                  ],
+                  textTheme: textTheme,
+                ),
+                _buildSection(
+                  title: "🔧 Report a Problem",
+                  items: [
+                    "1. Go to the Support tab.",
+                    "2. Tap 'Report a Problem'.",
+                    "3. Fill out the form with details and screenshots.",
+                  ],
+                  textTheme: textTheme,
+                ),
+                const SizedBox(height: 32),
+              ]),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSection({
+    required String title,
+    required List<String> items,
+    required TextTheme textTheme,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title,
+              style:
+                  textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+          const SizedBox(height: 12),
+          ...items.map(
+            (item) => Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Text(item, style: textTheme.bodyMedium),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class PrivacyPolicyScreen extends StatelessWidget {
+  const PrivacyPolicyScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
+    return Scaffold(
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar.medium(
+            title: Text("Privacy Policy"),
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            elevation: 2,
+            shadowColor: Colors.black.withAlpha(10),
+            surfaceTintColor: Colors.transparent,
+            pinned: true,
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.all(16),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate([
+                Text(
+                  "Effective Date: July 25, 2025",
+                  style: textTheme.labelMedium?.copyWith(color: Colors.grey),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  "Welcome to Shopify",
+                  style: textTheme.titleLarge
+                      ?.copyWith(fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  "This Privacy Policy explains how we collect, use, and protect your personal information when you use the Shopify mobile app.",
+                  style: textTheme.bodyMedium,
+                ),
+                const SizedBox(height: 24),
+                _buildSection(
+                  title: "1. Information We Collect",
+                  content: [
+                    "• Name, email, phone number, and address",
+                    "• Payment details (via third-party processors)",
+                    "• Device and usage information",
+                    "• Cookies and tracking technologies",
+                  ],
+                  textTheme: textTheme,
+                ),
+                _buildSection(
+                  title: "2. How We Use Your Information",
+                  content: [
+                    "• Process orders and deliver products",
+                    "• Provide customer support",
+                    "• Improve the app experience",
+                    "• Send updates and promotions",
+                  ],
+                  textTheme: textTheme,
+                ),
+                _buildSection(
+                  title: "3. Sharing Your Information",
+                  content: [
+                    "We do not sell your data.",
+                    "We may share your info with service providers, analytics tools, or legal authorities if necessary.",
+                  ],
+                  textTheme: textTheme,
+                ),
+                _buildSection(
+                  title: "4. Data Security",
+                  content: [
+                    "We use technical and administrative safeguards to protect your data.",
+                  ],
+                  textTheme: textTheme,
+                ),
+                _buildSection(
+                  title: "5. Your Privacy Rights",
+                  content: [
+                    "• Access, edit, or delete your data",
+                    "• Opt-out of promotional emails",
+                  ],
+                  textTheme: textTheme,
+                ),
+                _buildSection(
+                  title: "6. Children’s Privacy",
+                  content: [
+                    "Shopify does not knowingly collect data from children under 13.",
+                  ],
+                  textTheme: textTheme,
+                ),
+                _buildSection(
+                  title: "7. Changes to This Policy",
+                  content: [
+                    "We may update this policy. Continued use of the app means acceptance of changes.",
+                  ],
+                  textTheme: textTheme,
+                ),
+                _buildSection(
+                  title: "8. Contact Us",
+                  content: [
+                    "Email: support@yourdomain.com",
+                    "Phone: +1-234-567-890",
+                  ],
+                  textTheme: textTheme,
+                ),
+                const SizedBox(height: 32),
+              ]),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSection({
+    required String title,
+    required List<String> content,
+    required TextTheme textTheme,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8),
+          ...content.map(
+            (line) => Padding(
+              padding: const EdgeInsets.only(bottom: 4),
+              child: Text(line, style: textTheme.bodyMedium),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class TermsOfServiceScreen extends StatelessWidget {
+  const TermsOfServiceScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
+    return Scaffold(
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar.medium(
+            title: Text("Terms of Service"),
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            elevation: 2,
+            shadowColor: Colors.black.withAlpha(10),
+            surfaceTintColor: Colors.transparent,
+            pinned: true,
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.all(16),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate([
+                Text(
+                  "Effective Date: July 25, 2025",
+                  style: textTheme.labelMedium?.copyWith(color: Colors.grey),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  "Welcome to Shopify",
+                  style: textTheme.titleLarge
+                      ?.copyWith(fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  "These Terms of Service govern your use of our mobile app and services. Please read them carefully.",
+                  style: textTheme.bodyMedium,
+                ),
+                const SizedBox(height: 24),
+                _buildSection(
+                  title: "1. Use of the App",
+                  content: [
+                    "• You must be at least 13 years old.",
+                    "• Provide accurate and complete registration information.",
+                    "• Keep your login credentials secure.",
+                  ],
+                  textTheme: textTheme,
+                ),
+                _buildSection(
+                  title: "2. Orders and Payments",
+                  content: [
+                    "• Orders are subject to availability and price confirmation.",
+                    "• Payments are handled securely by third-party providers.",
+                    "• We may cancel suspicious or invalid orders.",
+                  ],
+                  textTheme: textTheme,
+                ),
+                _buildSection(
+                  title: "3. Shipping and Delivery",
+                  content: [
+                    "• Delivery times are estimated.",
+                    "• We are not liable for third-party shipping delays.",
+                  ],
+                  textTheme: textTheme,
+                ),
+                _buildSection(
+                  title: "4. Returns and Refunds",
+                  content: [
+                    "• You can request returns within [X] days.",
+                    "• Products must be unused and returned in original condition.",
+                  ],
+                  textTheme: textTheme,
+                ),
+                _buildSection(
+                  title: "5. User Conduct",
+                  content: [
+                    "• Do not use the app for illegal purposes.",
+                    "• Do not upload harmful or malicious content.",
+                    "• Do not attempt to hack or disrupt the service.",
+                  ],
+                  textTheme: textTheme,
+                ),
+                _buildSection(
+                  title: "6. Intellectual Property",
+                  content: [
+                    "• All app content is owned by Shopify or its licensors.",
+                    "• You may not copy or reuse any materials without permission.",
+                  ],
+                  textTheme: textTheme,
+                ),
+                _buildSection(
+                  title: "7. Limitation of Liability",
+                  content: [
+                    "• We are not responsible for indirect damages or data loss.",
+                    "• Use of the app is at your own risk.",
+                  ],
+                  textTheme: textTheme,
+                ),
+                _buildSection(
+                  title: "8. Changes to Terms",
+                  content: [
+                    "• We may update these Terms at any time.",
+                    "• Continued use of the app confirms your acceptance of changes.",
+                  ],
+                  textTheme: textTheme,
+                ),
+                _buildSection(
+                  title: "9. Contact Us",
+                  content: [
+                    "Email: support@yourdomain.com",
+                    "Phone: +1-234-567-890",
+                  ],
+                  textTheme: textTheme,
+                ),
+                const SizedBox(height: 32),
+              ]),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSection({
+    required String title,
+    required List<String> content,
+    required TextTheme textTheme,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8),
+          ...content.map(
+            (line) => Padding(
+              padding: const EdgeInsets.only(bottom: 4),
+              child: Text(line, style: textTheme.bodyMedium),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class SendFeedbackScreen extends StatefulWidget {
+  const SendFeedbackScreen({super.key});
+
+  @override
+  State<SendFeedbackScreen> createState() => _SendFeedbackScreenState();
+}
+
+class _SendFeedbackScreenState extends State<SendFeedbackScreen> {
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _messageController = TextEditingController();
+
+  bool _isSubmitting = false;
+
+  void _submitFeedback() {
+    if (_formKey.currentState!.validate()) {
+      setState(() => _isSubmitting = true);
+
+      // Simulate sending feedback
+      Future.delayed(const Duration(seconds: 2), () {
+        setState(() => _isSubmitting = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Thank you for your feedback!')),
+        );
+        _formKey.currentState?.reset();
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
+    return Scaffold(
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar.medium(
+            pinned: true,
+            title: const Text("Send Feedback"),
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.all(16),
+            sliver: SliverToBoxAdapter(
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "We'd love to hear your thoughts, suggestions, or report any issues.",
+                      style: textTheme.bodyMedium,
+                    ),
+                    const SizedBox(height: 24),
+                    TextFormField(
+                      controller: _nameController,
+                      decoration: const InputDecoration(
+                        labelText: 'Name',
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: (value) => value == null || value.isEmpty
+                          ? 'Please enter your name'
+                          : null,
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _emailController,
+                      decoration: const InputDecoration(
+                        labelText: 'Email',
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your email';
+                        } else if (!RegExp(r'\S+@\S+\.\S+').hasMatch(value)) {
+                          return 'Enter a valid email';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _messageController,
+                      maxLines: 5,
+                      decoration: const InputDecoration(
+                        labelText: 'Message',
+                        border: OutlineInputBorder(),
+                        alignLabelWithHint: true,
+                      ),
+                      validator: (value) => value == null || value.isEmpty
+                          ? 'Please enter a message'
+                          : null,
+                    ),
+                    const SizedBox(height: 24),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: _isSubmitting ? null : _submitFeedback,
+                        child: _isSubmitting
+                            ? const SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : const Text('Submit'),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

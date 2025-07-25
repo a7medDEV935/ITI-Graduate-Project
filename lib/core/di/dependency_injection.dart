@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import '../../features/auth/data/repo/firebase_auth_repo.dart';
 import '../../features/auth/logic/auth/auth_cubit.dart';
 import '../../features/home/data/repo/product_repo.dart';
+import '../../features/home/logic/notifications/notification_cubit.dart';
 import '../../features/home/logic/products/products_cubit.dart';
 import '../networking/api_constants.dart';
 import '../networking/api_service.dart';
@@ -26,6 +27,7 @@ Future<void> setupGetIt() async {
   getIt.registerLazySingleton<ProductRepo>(() => ProductRepo());
   getIt.registerLazySingleton<ProductsCubit>(() => ProductsCubit(getIt<ProductRepo>()));
 
+  getIt.registerLazySingleton<NotificationCubit>(() => NotificationCubit());
 
 
 }

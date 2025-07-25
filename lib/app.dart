@@ -9,6 +9,7 @@ import 'core/widgets/loading_indicator.dart';
 import 'features/auth/logic/auth/auth_cubit.dart';
 import 'features/auth/logic/auth/auth_state.dart';
 import 'features/auth/ui/login_or_register.dart';
+import 'features/home/logic/notifications/notification_cubit.dart';
 import 'features/splash/ui/splash_screen.dart';
 import 'features/home/ui/home_screen.dart';
 
@@ -69,6 +70,7 @@ class _MyAppState extends State<MyApp> {
       providers: [
         BlocProvider.value(value: getIt<ThemeCubit>()),
         BlocProvider.value(value: getIt<AuthCubit>()),
+        BlocProvider.value(value: getIt<NotificationCubit>()),
       ],
       child: BlocConsumer<AuthCubit, AuthState>(
         buildWhen: (previous, current) {
@@ -91,11 +93,13 @@ class _MyAppState extends State<MyApp> {
               );
             });
           } else if (state is AuthError) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.message)),
-              );
-            });
+            WidgetsBinding.instance.addPostFrameCallback(
+              (_) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(state.message)),
+                );
+              }
+            );
           }
         },
         builder: (context, state) {

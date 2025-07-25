@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -6,6 +8,7 @@ import 'core/constants/app_strings.dart';
 import 'core/di/dependency_injection.dart';
 import 'core/helpers/shared_pref_helper.dart';
 import 'app.dart';
+import 'core/services/notifications_service.dart';
 import 'firebase_options.dart';
 import 'features/onBoarding/ui/onboarding_screen.dart';
 
@@ -29,6 +32,9 @@ void main() async {
   await setupGetIt();
   await checkOnboardingComplete();
   await checkCurrentThemeMode();
+  await NotificationService.initNotifications();
+  log("🔒 Notification Permission Granted: ${NotificationService.permissionGranted}");
+
   Widget nextScreen = isOnboardingComplete ? MyApp() : OnboardingScreen();
   runApp(RootApp(nextScreen: nextScreen));
 }

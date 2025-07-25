@@ -2,10 +2,11 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../auth/logic/auth/auth_cubit.dart';
+import '../../../../core/services/notifications_service.dart';
 import '../../data/models/product_model.dart';
 import '../../enums/sort_by_enum.dart';
 import '../../enums/view_mode_enum.dart';
+import '../../logic/notifications/notification_cubit.dart';
 import '../../service/product_filter_service.dart';
 import '../poduct_detail_page.dart';
 import 'build_category_card.dart';
@@ -137,6 +138,23 @@ class _HomeWidgetSuccessState extends State<HomeWidgetSuccess> {
                 tooltip: 'Search',
                 onPressed: () {
                   // Search action
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.notification_add),
+                tooltip: 'Notifications',
+                onPressed: () async {
+                  if (NotificationService.permissionGranted ==
+                      context.read<NotificationCubit>().isNotificationEnabled) {
+                    await NotificationService.showNotification(
+                      title: 'Hello 🎉',
+                      body: 'This is a working test notification.',
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Enable Notifications")),
+                    );
+                  }
                 },
               ),
             ],

@@ -1,3 +1,6 @@
+.flupilot_last_directory
+lib/main_dev.dart
+
 # Miscellaneous
 *.class
 *.log

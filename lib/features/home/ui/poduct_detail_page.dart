@@ -1,6 +1,10 @@
-import 'package:final_project/core/helpers/extensions.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../core/di/dependency_injection.dart';
 import '../data/models/product_model.dart';
+import '../logic/cart/cart_cubit.dart';
+import '../logic/cart/cart_state.dart';
 import 'widgets/product_detail_widget.dart';
 
 class ProductDetailPage extends StatelessWidget {
@@ -28,21 +32,110 @@ class ProductDetailPage extends StatelessWidget {
         ),
         child: SizedBox(
           height: 48,
-          child: ElevatedButton.icon(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-            icon: const Icon(Icons.shopping_cart_outlined),
-            label: const Text('Add to Cart'),
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('${product.title} added to cart!'),
-                ),
-              );
+          child: BlocBuilder<CartCubit, CartState>(
+            buildWhen: (previous, current) {
+              return current is CartLoaded || current is CartInitial;
+            },
+            builder: (context, state) {
+              final cartCubit = context.read<CartCubit>();
+              final isInCart = cartCubit.isInCart(product);
+              final quantity = cartCubit.getQuantityInCart(product);
+
+              return isInCart
+                  ? Row(
+                      children: [
+                        Expanded(
+                          flex: 3,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey[300]!),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                IconButton(
+                                  onPressed: () {
+                                    if (quantity > 1) {
+                                      cartCubit.updateQuantity(
+                                          product, quantity - 1);
+                                    } else {
+                                      cartCubit.removeFromCart(product);
+                                    }
+                                  },
+                                  icon: const Icon(Icons.remove_circle_outline),
+                                ),
+                                Text(
+                                  quantity.toString(),
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                IconButton(
+                                  onPressed: () {
+                                    cartCubit.updateQuantity(
+                                        product, quantity + 1);
+                                  },
+                                  icon: const Icon(Icons.add_circle_outline),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          flex: 3,
+                          child: ElevatedButton.icon(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.orange,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            icon: const Icon(Icons.shopping_cart,
+                                color: Colors.white),
+                            label: const Text(
+                              'Update Cart',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            onPressed: () {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content:
+                                      Text('${product.title} updated in cart!'),
+                                  backgroundColor: Colors.orange,
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    )
+                  : ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      icon: const Icon(Icons.shopping_cart_outlined,
+                          color: Colors.white),
+                      label: const Text(
+                        'Add to Cart',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      onPressed: () {
+                        cartCubit.addToCart(product);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('${product.title} added to cart!'),
+                            backgroundColor: Colors.green,
+                          ),
+                        );
+                      },
+                    );
             },
           ),
         ),
@@ -70,8 +163,15 @@ class ProductDetailPage extends StatelessWidget {
                     children: relatedProducts.map((product) {
                       return GestureDetector(
                         onTap: () {
-                          context.push(
-                              RelatedProductsDetailPage(product: product));
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => BlocProvider.value(
+                                value: getIt<CartCubit>(),
+                                child:
+                                    RelatedProductsDetailPage(product: product),
+                              ),
+                            ),
+                          );
                         },
                         child: Container(
                           width: 100,
@@ -237,21 +337,111 @@ class RelatedProductsDetailPage extends StatelessWidget {
         ),
         child: SizedBox(
           height: 48,
-          child: ElevatedButton.icon(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-            icon: const Icon(Icons.shopping_cart_outlined),
-            label: const Text('Add to Cart'),
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('${product.title} added to cart!'),
-                ),
-              );
+          child: BlocBuilder<CartCubit, CartState>(
+            buildWhen: (previous, current) {
+              // Only rebuild when cart state actually changes
+              return current is CartLoaded || current is CartInitial;
+            },
+            builder: (context, state) {
+              final cartCubit = context.read<CartCubit>();
+              final isInCart = cartCubit.isInCart(product);
+              final quantity = cartCubit.getQuantityInCart(product);
+
+              return isInCart
+                  ? Row(
+                      children: [
+                        Expanded(
+                          flex: 2,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey[300]!),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                IconButton(
+                                  onPressed: () {
+                                    if (quantity > 1) {
+                                      cartCubit.updateQuantity(
+                                          product, quantity - 1);
+                                    } else {
+                                      cartCubit.removeFromCart(product);
+                                    }
+                                  },
+                                  icon: const Icon(Icons.remove_circle_outline),
+                                ),
+                                Text(
+                                  quantity.toString(),
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                IconButton(
+                                  onPressed: () {
+                                    cartCubit.updateQuantity(
+                                        product, quantity + 1);
+                                  },
+                                  icon: const Icon(Icons.add_circle_outline),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          flex: 3,
+                          child: ElevatedButton.icon(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.orange,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            icon: const Icon(Icons.shopping_cart,
+                                color: Colors.white),
+                            label: const Text(
+                              'Update Cart',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            onPressed: () {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content:
+                                      Text('${product.title} updated in cart!'),
+                                  backgroundColor: Colors.orange,
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    )
+                  : ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      icon: const Icon(Icons.shopping_cart_outlined,
+                          color: Colors.white),
+                      label: const Text(
+                        'Add to Cart',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      onPressed: () {
+                        cartCubit.addToCart(product);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('${product.title} added to cart!'),
+                            backgroundColor: Colors.green,
+                          ),
+                        );
+                      },
+                    );
             },
           ),
         ),

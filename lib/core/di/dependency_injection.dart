@@ -6,6 +6,7 @@ import '../../features/auth/logic/auth/auth_cubit.dart';
 import '../../features/home/data/repo/product_repo.dart';
 import '../../features/home/logic/notifications/notification_cubit.dart';
 import '../../features/home/logic/products/products_cubit.dart';
+import '../../features/home/logic/cart/cart_cubit.dart';
 import '../networking/api_constants.dart';
 import '../networking/api_service.dart';
 import '../networking/dio_factory.dart';
@@ -17,17 +18,17 @@ Future<void> setupGetIt() async {
   // Dio & ApiService
   Dio dio = DioFactory.getDio();
 
-  getIt.registerLazySingleton<ApiService>(() => ApiService(dio , baseUrl: ApiConstants.apiBaseUrl));
-
-  getIt.registerLazySingleton<ThemeCubit>(() => ThemeCubit());
-  getIt.registerLazySingleton<AuthCubit>(() => AuthCubit(authRepo: getIt<FirebaseRepo>()));
+  getIt.registerLazySingleton<ApiService>(
+      () => ApiService(dio, baseUrl: ApiConstants.apiBaseUrl));
 
   getIt.registerLazySingleton<FirebaseRepo>(() => FirebaseRepo());
-
   getIt.registerLazySingleton<ProductRepo>(() => ProductRepo());
-  getIt.registerLazySingleton<ProductsCubit>(() => ProductsCubit(getIt<ProductRepo>()));
 
+  getIt.registerLazySingleton<ThemeCubit>(() => ThemeCubit());
+  getIt.registerLazySingleton<AuthCubit>(
+      () => AuthCubit(authRepo: getIt<FirebaseRepo>()));
+  getIt.registerLazySingleton<ProductsCubit>(
+      () => ProductsCubit(getIt<ProductRepo>()));
   getIt.registerLazySingleton<NotificationCubit>(() => NotificationCubit());
-
-
+  getIt.registerLazySingleton<CartCubit>(() => CartCubit());
 }

@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/widgets/salomon_bottom_bar.dart';
+import '../logic/notifications/notification_cubit.dart';
+import 'widgets/cart_widget.dart';
 import 'widgets/home_widget.dart';
+import 'widgets/orders_widget.dart';
 import 'widgets/profile_widget.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -14,12 +18,17 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final List<Widget> screens = [
-      HomeWidget(),
-      const Center(child: Text("Screen 2")),
-      const Center(child: Text("Screen 3")),
-      ProfileWidget(),
+      const HomeWidget(),
+      const OrdersWidget(),
+      const CartWidget(),
+      const ProfileWidget(),
     ];
 
     return Scaffold(
@@ -30,6 +39,11 @@ class _HomeScreenState extends State<HomeScreen> {
           setState(() {
             _selectedIndex = index;
           });
+          if (index == 1) {
+            context.read<NotificationCubit>().setNotificationScreenOpen(true);
+          } else {
+            context.read<NotificationCubit>().setNotificationScreenOpen(false);
+          }
         },
       ),
     );

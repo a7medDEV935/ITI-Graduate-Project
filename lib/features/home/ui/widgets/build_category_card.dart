@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/di/dependency_injection.dart';
 import '../../data/models/product_model.dart';
+import '../../logic/cart/cart_cubit.dart';
 import '../category_products_screen.dart';
 
 Widget buildCategoryCard(
@@ -17,9 +20,12 @@ Widget buildCategoryCard(
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => CategoryProductsScreen(
-              category: category['name'],
-              products: products,
+            builder: (_) => BlocProvider.value(
+              value: getIt<CartCubit>(),
+              child: CategoryProductsScreen(
+                category: category['name'],
+                products: products,
+              ),
             ),
           ),
         );

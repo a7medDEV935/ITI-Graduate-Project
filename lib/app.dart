@@ -10,6 +10,7 @@ import 'features/auth/logic/auth/auth_cubit.dart';
 import 'features/auth/logic/auth/auth_state.dart';
 import 'features/auth/ui/login_or_register.dart';
 import 'features/home/logic/notifications/notification_cubit.dart';
+import 'features/home/logic/cart/cart_cubit.dart';
 import 'features/splash/ui/splash_screen.dart';
 import 'features/home/ui/home_screen.dart';
 
@@ -62,6 +63,7 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     getIt<AuthCubit>().checkAuth();
+    getIt<CartCubit>().loadCart();
   }
 
   @override
@@ -71,6 +73,7 @@ class _MyAppState extends State<MyApp> {
         BlocProvider.value(value: getIt<ThemeCubit>()),
         BlocProvider.value(value: getIt<AuthCubit>()),
         BlocProvider.value(value: getIt<NotificationCubit>()),
+        BlocProvider.value(value: getIt<CartCubit>()),
       ],
       child: BlocConsumer<AuthCubit, AuthState>(
         buildWhen: (previous, current) {
@@ -93,13 +96,11 @@ class _MyAppState extends State<MyApp> {
               );
             });
           } else if (state is AuthError) {
-            WidgetsBinding.instance.addPostFrameCallback(
-              (_) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(state.message)),
-                );
-              }
-            );
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(state.message)),
+              );
+            });
           }
         },
         builder: (context, state) {

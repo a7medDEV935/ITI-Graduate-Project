@@ -2,11 +2,11 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/services/notifications_service.dart';
+import '../../../../core/di/dependency_injection.dart';
 import '../../data/models/product_model.dart';
 import '../../enums/sort_by_enum.dart';
 import '../../enums/view_mode_enum.dart';
-import '../../logic/notifications/notification_cubit.dart';
+import '../../logic/cart/cart_cubit.dart';
 import '../../service/product_filter_service.dart';
 import '../poduct_detail_page.dart';
 import 'build_category_card.dart';
@@ -79,21 +79,34 @@ class _HomeWidgetSuccessState extends State<HomeWidgetSuccess> {
     super.dispose();
   }
 
-  void _navigateToRelatedProducts(ProductModel selectedProduct) {
-    final categoryName = selectedProduct.category.name;
-    final relatedProducts = groupedByCategory[categoryName]!
-        .where((p) => p.id != selectedProduct.id)
-        .toList();
+  void _navigateToRelatedProducts(
+      BuildContext context, ProductModel selectedProduct) {
+    try {
+      final categoryName = selectedProduct.category.name;
+      final relatedProducts = groupedByCategory[categoryName]
+              ?.where((p) => p.id != selectedProduct.id)
+              .toList() ??
+          [];
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ProductDetailPage(
-          relatedProducts: relatedProducts,
-          product: selectedProduct,
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => BlocProvider.value(
+            value: getIt<CartCubit>(),
+            child: ProductDetailPage(
+              relatedProducts: relatedProducts,
+              product: selectedProduct,
+            ),
+          ),
         ),
-      ),
-    );
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error navigating to product details: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   @override
@@ -138,23 +151,6 @@ class _HomeWidgetSuccessState extends State<HomeWidgetSuccess> {
                 tooltip: 'Search',
                 onPressed: () {
                   // Search action
-                },
-              ),
-              IconButton(
-                icon: const Icon(Icons.notification_add),
-                tooltip: 'Notifications',
-                onPressed: () async {
-                  if (NotificationService.permissionGranted ==
-                      context.read<NotificationCubit>().isNotificationEnabled) {
-                    await NotificationService.showNotification(
-                      title: 'Hello 🎉',
-                      body: 'This is a working test notification.',
-                    );
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Enable Notifications")),
-                    );
-                  }
                 },
               ),
             ],
@@ -316,8 +312,8 @@ class _HomeWidgetSuccessState extends State<HomeWidgetSuccess> {
                                 );
                               },
                               child: GestureDetector(
-                                onTap: () =>
-                                    _navigateToRelatedProducts(product),
+                                onTap: () => _navigateToRelatedProducts(
+                                    context, product),
                                 child: Container(
                                   margin: const EdgeInsets.only(bottom: 8),
                                   child: ProductCardListTile(product: product),
@@ -347,8 +343,8 @@ class _HomeWidgetSuccessState extends State<HomeWidgetSuccess> {
                                 );
                               },
                               child: GestureDetector(
-                                onTap: () =>
-                                    _navigateToRelatedProducts(product),
+                                onTap: () => _navigateToRelatedProducts(
+                                    context, product),
                                 child: ProductCardGridTile(product: product),
                               ),
                             );

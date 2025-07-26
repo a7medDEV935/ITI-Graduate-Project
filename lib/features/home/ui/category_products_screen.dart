@@ -1,10 +1,13 @@
-import 'package:final_project/core/helpers/extensions.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../core/di/dependency_injection.dart';
 import '../data/models/product_model.dart';
 import '../enums/sort_by_enum.dart';
+import '../logic/cart/cart_cubit.dart';
 import '../service/product_filter_service.dart';
 import 'poduct_detail_page.dart';
-import 'widgets/product_card_grid_tile.dart'; // Adjust path as needed
+import 'widgets/product_card_grid_tile.dart';
 
 class CategoryProductsScreen extends StatefulWidget {
   final String category;
@@ -97,8 +100,15 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
                     final product = _filteredProducts[index];
                     return GestureDetector(
                       onTap: () {
-                        context
-                            .push(RelatedProductsDetailPage(product: product));
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => BlocProvider.value(
+                              value: getIt<CartCubit>(),
+                              child:
+                                  RelatedProductsDetailPage(product: product),
+                            ),
+                          ),
+                        );
                       },
                       child: ProductCardGridTile(product: product),
                     );

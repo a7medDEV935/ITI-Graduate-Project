@@ -89,7 +89,7 @@ class _SettingsScreenState extends State<ProfileWidget> {
                           .watch<NotificationCubit>()
                           .isNotificationEnabled,
                       onChanged: (value) {
-                        context.read<NotificationCubit>().toggleNotifications();
+                        getIt<NotificationCubit>().toggleNotifications();
                       },
                     ),
                     _buildSwitchTile(
@@ -98,7 +98,7 @@ class _SettingsScreenState extends State<ProfileWidget> {
                       subtitle: 'Enable dark mode',
                       value: darkModeEnabled,
                       onChanged: (value) {
-                        context.read<ThemeCubit>().toggleTheme();
+                        getIt<ThemeCubit>().toggleTheme();
                       },
                     ),
                     _buildSwitchTile(
@@ -905,13 +905,13 @@ class _SendFeedbackScreenState extends State<SendFeedbackScreen> {
   void _submitFeedback() {
     if (_formKey.currentState!.validate()) {
       setState(() => _isSubmitting = true);
-
-      // Simulate sending feedback
       Future.delayed(const Duration(seconds: 2), () {
         setState(() => _isSubmitting = false);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Thank you for your feedback!')),
-        );
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Thank you for your feedback!')),
+          );
+        }
         _formKey.currentState?.reset();
       });
     }

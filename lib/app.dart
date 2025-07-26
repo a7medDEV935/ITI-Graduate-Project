@@ -6,6 +6,7 @@ import 'core/theme/cubit/theme/theme_cubit.dart';
 import 'core/theme/dark_mode.dart';
 import 'core/theme/light_mode.dart';
 import 'core/widgets/loading_indicator.dart';
+import 'core/widgets/toast.dart';
 import 'features/auth/logic/auth/auth_cubit.dart';
 import 'features/auth/logic/auth/auth_state.dart';
 import 'features/auth/ui/login_or_register.dart';
@@ -91,15 +92,11 @@ class _MyAppState extends State<MyApp> {
         listener: (context, state) {
           if (state is AuthLoading) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Loading...')),
-              );
+              showWarningToast(context: context, message: "Loading....");
             });
           } else if (state is AuthError) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.message)),
-              );
+              showErrorToast(context: context, message: state.message);
             });
           }
         },

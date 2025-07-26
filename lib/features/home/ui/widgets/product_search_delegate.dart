@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/di/dependency_injection.dart';
+import '../../../../core/widgets/toast.dart';
 import '../../data/models/product_model.dart';
 import '../../enums/sort_by_enum.dart';
 import '../../enums/view_mode_enum.dart';
@@ -323,12 +324,8 @@ class ProductSearchDelegate extends SearchDelegate<ProductModel?> {
         ),
       );
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error navigating to product details: $e'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      showErrorToast(
+          context: context, message: 'Error navigating to product details: $e');
     }
   }
 

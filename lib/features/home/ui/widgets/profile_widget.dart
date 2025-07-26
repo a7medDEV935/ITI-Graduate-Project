@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/theme/cubit/theme/theme_cubit.dart';
+import '../../../../core/widgets/toast.dart';
 import '../../../auth/logic/auth/auth_cubit.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../auth/data/models/app_user.dart';
@@ -168,9 +169,8 @@ class _SettingsScreenState extends State<ProfileWidget> {
                       onTap: () async {
                         await context.read<AuthCubit>().logout();
                         if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('logout')),
-                          );
+                          showSuccessToast(
+                              context: context, message: "LogOut successfully");
                         }
                       },
                       textColor: Colors.red,
@@ -491,7 +491,6 @@ class PrivacyScreen extends StatelessWidget {
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
-                _showSnackBar(context, 'Account deletion requested');
               },
               style: TextButton.styleFrom(foregroundColor: Colors.red),
               child: Text('Delete Account'),
@@ -499,15 +498,6 @@ class PrivacyScreen extends StatelessWidget {
           ],
         );
       },
-    );
-  }
-
-  void _showSnackBar(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        duration: const Duration(seconds: 3),
-      ),
     );
   }
 }
@@ -908,9 +898,8 @@ class _SendFeedbackScreenState extends State<SendFeedbackScreen> {
       Future.delayed(const Duration(seconds: 2), () {
         setState(() => _isSubmitting = false);
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Thank you for your feedback!')),
-          );
+          showSuccessToast(
+              context: context, message: 'Thank you for your feedback!');
         }
         _formKey.currentState?.reset();
       });

@@ -2,6 +2,7 @@ import 'package:final_project/core/helpers/extensions.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/widgets/custom_pull_to_refresh.dart';
+import '../../../../core/widgets/toast.dart';
 import '../../data/models/order_model.dart';
 import '../../service/order_service.dart';
 
@@ -43,12 +44,7 @@ class _OrdersWidgetState extends State<OrdersWidget> {
                 OrderService.clearOrders().then((_) {
                   setState(() {});
                   if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('All orders cleared'),
-                        backgroundColor: Colors.orange,
-                      ),
-                    );
+                   showWarningToast(context: context, message: 'All orders cleared');
                   }
                 });
               },

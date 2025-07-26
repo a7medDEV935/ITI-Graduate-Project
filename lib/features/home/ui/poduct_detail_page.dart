@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/di/dependency_injection.dart';
+import '../../../core/widgets/toast.dart';
 import '../data/models/product_model.dart';
 import '../logic/cart/cart_cubit.dart';
 import '../logic/cart/cart_state.dart';
@@ -277,13 +278,7 @@ Widget _buildAddToCartButton(ProductModel product) {
                           style: TextStyle(color: Colors.white),
                         ),
                         onPressed: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content:
-                                  Text('${product.title} updated in cart!'),
-                              backgroundColor: Colors.orange,
-                            ),
-                          );
+                         showWarningToast(context: context, message: '${product.title} updated in cart!');
                         },
                       ),
                     ),
@@ -304,12 +299,7 @@ Widget _buildAddToCartButton(ProductModel product) {
                   ),
                   onPressed: () {
                     cartCubit.addToCart(product);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('${product.title} added to cart!'),
-                        backgroundColor: Colors.green,
-                      ),
-                    );
+                    showSuccessToast(context: context, message: '${product.title} added to cart!');
                   },
                 );
         },

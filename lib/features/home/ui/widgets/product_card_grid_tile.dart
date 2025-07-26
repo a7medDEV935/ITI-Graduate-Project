@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/widgets/toast.dart';
 import '../../data/models/product_model.dart';
 import '../../logic/cart/cart_cubit.dart';
 import '../../logic/cart/cart_state.dart';
@@ -105,14 +106,7 @@ class ProductCardGridTile extends StatelessWidget {
                                       }
                                     } catch (e) {
                                       if (context.mounted) {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          SnackBar(
-                                            content:
-                                                Text('Error updating cart: $e'),
-                                            backgroundColor: Colors.red,
-                                          ),
-                                        );
+                                        showErrorToast(context: context, message: 'Error updating cart: $e');
                                       }
                                     }
                                   },
@@ -145,14 +139,7 @@ class ProductCardGridTile extends StatelessWidget {
                                           product, quantity + 1);
                                     } catch (e) {
                                       if (context.mounted) {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          SnackBar(
-                                            content:
-                                                Text('Error updating cart: $e'),
-                                            backgroundColor: Colors.red,
-                                          ),
-                                        );
+                                       showErrorToast(context: context, message: 'Error updating cart: $e');
                                       }
                                     }
                                   },
@@ -176,25 +163,11 @@ class ProductCardGridTile extends StatelessWidget {
                                 try {
                                   await cartCubit.addToCart(product);
                                   if (context.mounted) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                            '${product.title} added to cart!'),
-                                        backgroundColor: Colors.green,
-                                        duration: const Duration(seconds: 1),
-                                      ),
-                                    );
+                                    showSuccessToast(context: context, message: '${product.title} added to cart!');
                                   }
                                 } catch (e) {
                                   if (context.mounted) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content:
-                                            Text('Error adding to cart: $e'),
-                                        backgroundColor: Colors.red,
-                                        duration: const Duration(seconds: 2),
-                                      ),
-                                    );
+                                   showErrorToast(context: context, message: 'Error adding to cart: $e');
                                   }
                                 }
                               },

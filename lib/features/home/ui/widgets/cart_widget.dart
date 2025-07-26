@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/services/notifications_service.dart';
 import '../../../../core/widgets/custom_action_slider.dart';
+import '../../../../core/widgets/toast.dart';
 import '../../data/models/cart_item.dart';
 import '../../logic/cart/cart_cubit.dart';
 import '../../logic/cart/cart_state.dart';
@@ -68,12 +69,7 @@ class _CartWidgetState extends State<CartWidget> {
     return BlocConsumer<CartCubit, CartState>(
       listener: (context, state) {
         if (state is CartError) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.message),
-              backgroundColor: Colors.red,
-            ),
-          );
+          showErrorToast(context: context, message: state.message);
         }
         if (state is CartLoaded &&
             state.cartItems.isEmpty &&
@@ -261,12 +257,7 @@ class _CartWidgetState extends State<CartWidget> {
             icon: const Icon(Icons.delete_outline, color: Colors.red),
             onPressed: () {
               context.read<CartCubit>().removeFromCart(product);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  backgroundColor: Colors.orange,
-                  content: Text("${product.title} was removed from cart"),
-                ),
-              );
+              showWarningToast(context: context, message: "${product.title} was removed from cart");
             },
           ),
         ],
@@ -403,31 +394,16 @@ class _CartWidgetState extends State<CartWidget> {
                   'Thank you for your purchase! Your order #${orderId.substring(orderId.length - 8)} has been successfully placed.',
             );
           } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text("Enable Notifications")),
-            );
+            showErrorToast(context: context, message: "Enable Notifications");
           }
 
           if (context.mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                backgroundColor: Colors.green,
-                content: Text(
-                  "Order #${orderId.substring(orderId.length - 8)} placed successfully!",
-                ),
-                duration: const Duration(seconds: 3),
-              ),
-            );
+           showSuccessToast(context: context, message: "Order #${orderId.substring(orderId.length - 8)} placed successfully!");
           }
         }
       } catch (e) {
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              backgroundColor: Colors.red,
-              content: Text("Failed to place order: $e"),
-            ),
-          );
+          showErrorToast(context: context, message: "Failed to place order: $e");
         }
       }
     }

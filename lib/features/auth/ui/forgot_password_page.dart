@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/helpers/app_regex.dart';
+import '../../../core/widgets/toast.dart';
 import '../logic/auth/auth_cubit.dart';
 import 'widgets/forgot_password_content.dart';
 import 'widgets/forgot_password_header.dart';
@@ -95,17 +96,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage>
 
         // Show success message
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text("Reset link sent successfully"),
-              backgroundColor: Colors.green,
-              behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              duration: const Duration(seconds: 4),
-            ),
-          );
+          showSuccessToast(
+              context: context, message: "Reset link sent successfully");
           // Clear the email field
           _emailController.clear();
           await Future.delayed(const Duration(seconds: 4));
@@ -117,31 +109,18 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage>
       } else {
         // Show error message
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text("No account found with this email address. Please check your email or create a new account"),
-              backgroundColor: Colors.red,
-              behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-          );
+          showErrorToast(
+              context: context,
+              message:
+                  "No account found with this email address. Please check your email or create a new account");
         }
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-                "No account found with this email address. Please check your email or create a new account"),
-            backgroundColor: Colors.red,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
-        );
+        showErrorToast(
+            context: context,
+            message:
+                "No account found with this email address. Please check your email or create a new account");
       }
     } finally {
       if (mounted) {

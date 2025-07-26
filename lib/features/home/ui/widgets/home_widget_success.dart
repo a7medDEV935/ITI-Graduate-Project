@@ -12,6 +12,7 @@ import '../poduct_detail_page.dart';
 import 'build_category_card.dart';
 import 'product_card_grid_tile.dart';
 import 'product_card_list_tile.dart';
+import 'product_search_delegate.dart';
 
 class HomeWidgetSuccess extends StatefulWidget {
   const HomeWidgetSuccess({super.key, required this.products});
@@ -59,6 +60,41 @@ class _HomeWidgetSuccessState extends State<HomeWidgetSuccess> {
       'name': 'Miscellaneous',
       'icon': Icons.category,
       'color': Colors.brown,
+    },
+    {
+      'name': 'Books',
+      'icon': Icons.book,
+      'color': Colors.deepPurple,
+    },
+    {
+      'name': 'Toys',
+      'icon': Icons.toys,
+      'color': Colors.redAccent,
+    },
+    {
+      'name': 'Beauty',
+      'icon': Icons.brush,
+      'color': Colors.purple,
+    },
+    {
+      'name': 'Sports',
+      'icon': Icons.sports_soccer,
+      'color': Colors.teal,
+    },
+    {
+      'name': 'Groceries',
+      'icon': Icons.local_grocery_store,
+      'color': Colors.lightGreen,
+    },
+    {
+      'name': 'Watches',
+      'icon': Icons.watch,
+      'color': Colors.indigo,
+    },
+    {
+      'name': 'Jewelry',
+      'icon': Icons.diamond,
+      'color': Colors.amber,
     },
   ];
 
@@ -150,7 +186,13 @@ class _HomeWidgetSuccessState extends State<HomeWidgetSuccess> {
                 icon: const Icon(Icons.search),
                 tooltip: 'Search',
                 onPressed: () {
-                  // Search action
+                  showSearch(
+                    context: context,
+                    delegate: ProductSearchDelegate(
+                      allProducts: widget.products,
+                      groupedByCategory: groupedByCategory,
+                    ),
+                  );
                 },
               ),
             ],

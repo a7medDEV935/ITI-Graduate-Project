@@ -46,9 +46,16 @@ class ProductsCubit extends Cubit<ProductsState> {
 
     final response = await getIt<ProductRepo>().fetchProducts();
 
-    response.when(
-      success: (data) {
+    await response.when(
+      success: (data) async {
         _hasFetched = true;
+        final List<Map<String, dynamic>> productDataList =
+            data.map((product) => product.toJson()).toList();
+        await FirestoreService.addDocumentsBatch(
+          'products',
+          productDataList,
+          useCustomId: true,
+        );
         emit(ProductsState.success(data));
       },
       failure: (error) {

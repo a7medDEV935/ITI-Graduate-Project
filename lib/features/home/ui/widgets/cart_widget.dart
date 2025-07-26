@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/services/notifications_service.dart';
+import '../../../../core/widgets/custom_action_slider.dart';
 import '../../data/models/cart_item.dart';
 import '../../logic/cart/cart_cubit.dart';
 import '../../logic/cart/cart_state.dart';
@@ -16,6 +17,52 @@ class CartWidget extends StatefulWidget {
 }
 
 class _CartWidgetState extends State<CartWidget> {
+  PersistentBottomSheetController? _sheetController;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _showCheckoutBottomSheet(context);
+    });
+  }
+
+  void _showCheckoutBottomSheet(BuildContext context) {
+    final state = context.read<CartCubit>().state;
+    if (state is CartLoaded &&
+        state.cartItems.isNotEmpty &&
+        _sheetController == null) {
+      _sheetController = showBottomSheet(
+        context: context,
+        enableDrag: false,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        builder: (context) => SafeArea(
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height * 0.25,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+              child: _buildCheckoutSection(context, state),
+            ),
+          ),
+        ),
+      );
+      _sheetController?.closed.whenComplete(() {
+        _sheetController = null;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _sheetController?.close();
+      _sheetController = null;
+    });
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<CartCubit, CartState>(
@@ -27,6 +74,18 @@ class _CartWidgetState extends State<CartWidget> {
               backgroundColor: Colors.red,
             ),
           );
+        }
+        if (state is CartLoaded &&
+            state.cartItems.isEmpty &&
+            _sheetController != null) {
+          _sheetController?.close();
+          _sheetController = null;
+        } else if (state is CartLoaded &&
+            state.cartItems.isNotEmpty &&
+            _sheetController == null) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _showCheckoutBottomSheet(context);
+          });
         }
       },
       builder: (context, state) {
@@ -105,12 +164,6 @@ class _CartWidgetState extends State<CartWidget> {
                       },
                       childCount: state.cartItems.length,
                     ),
-                  ),
-                ),
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: _buildCheckoutSection(context, state),
                   ),
                 ),
               ] else
@@ -224,11 +277,6 @@ class _CartWidgetState extends State<CartWidget> {
   Widget _buildCheckoutSection(BuildContext context, CartLoaded state) {
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        border: const Border(
-          top: BorderSide(color: Colors.grey),
-        ),
-      ),
       child: Column(
         children: [
           Row(
@@ -262,26 +310,8 @@ class _CartWidgetState extends State<CartWidget> {
           const SizedBox(height: 12),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                onPressed: () => _showCheckoutDialog(context, state),
-                child: const Text(
-                  'Proceed to checkout',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
+            child: CustomActionSlider(
+              onSuccess: () async => _showCheckoutDialog(context, state),
             ),
           ),
         ],
@@ -306,7 +336,7 @@ class _CartWidgetState extends State<CartWidget> {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.grey[100],
+                color: Theme.of(context).colorScheme.secondary,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Column(

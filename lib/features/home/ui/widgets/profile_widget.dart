@@ -142,7 +142,7 @@ class _SettingsScreenState extends State<ProfileWidget> {
                   // Support Section
                   _buildSectionHeader('Support & About'),
                   _buildSettingsCard([
-                    _buildSettingsTile(
+                  _buildSettingsTile(
                       icon: Icons.help_outline,
                       title: 'Help & Support',
                       subtitle: 'Get help and support for any issues',
@@ -170,7 +170,7 @@ class _SettingsScreenState extends State<ProfileWidget> {
                         await context.read<AuthCubit>().logout();
                         if (context.mounted) {
                           showSuccessToast(
-                              context: context, message: "LogOut successfully");
+                              context: context, message: "Logout successfully");
                         }
                       },
                       textColor: Colors.red,

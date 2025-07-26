@@ -1,11 +1,16 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+import '../../../../core/enum/user.dart';
 import '../models/app_user.dart';
 import 'auth_repo.dart';
 
 class FirebaseRepo implements AuthRepo {
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+
+  UserType? currentUserType;
+
+  UserType get userType => currentUserType ?? UserType.user;
 
   @override
   Future<AppUser?> getCurrentUser() async {
@@ -51,6 +56,9 @@ class FirebaseRepo implements AuthRepo {
       UserCredential userCredential = await firebaseAuth
           .signInWithEmailAndPassword(email: email, password: password);
       AppUser user = AppUser(uid: userCredential.user!.uid, email: email);
+
+      setUserTypeFromEmail();
+
       return user;
     } catch (e) {
       throw Exception('Login failed: \$e');
@@ -99,6 +107,9 @@ class FirebaseRepo implements AuthRepo {
           await firebaseAuth.signInWithCredential(credential);
       final firebaseUser = userCredential.user;
       if (firebaseUser == null) return null;
+
+      setUserTypeFromEmail();
+
       return AppUser(
         uid: firebaseUser.uid,
         email: firebaseUser.email ?? '',
@@ -107,6 +118,17 @@ class FirebaseRepo implements AuthRepo {
       );
     } catch (e) {
       throw Exception('Sign in with Google failed: \$e');
+    }
+  }
+
+  Future<void> setUserTypeFromEmail() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      if (user.email == 'admin@admin.com') {
+        currentUserType = UserType.admin;
+      } else {
+        currentUserType = UserType.user;
+      }
     }
   }
 }

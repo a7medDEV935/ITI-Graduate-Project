@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../core/di/dependency_injection.dart';
+import '../../../core/enum/user.dart';
 import '../../../core/widgets/salomon_bottom_bar.dart';
+import '../../auth/data/repo/firebase_auth_repo.dart';
 import '../logic/notifications/notification_cubit.dart';
 import 'widgets/cart_widget.dart';
+import 'widgets/dashboard_widget.dart';
 import 'widgets/home_widget.dart';
 import 'widgets/orders_widget.dart';
 import 'widgets/profile_widget.dart';
@@ -17,6 +21,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
+  final UserType currentUserType = getIt<FirebaseRepo>().userType;
+
   @override
   void initState() {
     super.initState();
@@ -27,6 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final List<Widget> screens = [
       const HomeWidget(),
       const OrdersWidget(),
+      ...currentUserType == UserType.admin ? [const DashBoardWidget()] : [],
       const CartWidget(),
       const ProfileWidget(),
     ];
@@ -34,6 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       body: screens[_selectedIndex],
       bottomNavigationBar: CustomSalomonBottomBar(
+        userType: currentUserType,
         selectedIndex: _selectedIndex,
         onTabChange: (index) {
           setState(() {

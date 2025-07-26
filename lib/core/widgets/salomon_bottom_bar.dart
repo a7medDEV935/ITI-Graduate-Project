@@ -5,12 +5,17 @@ import '../../features/home/logic/cart/cart_cubit.dart';
 import '../../features/home/logic/cart/cart_state.dart';
 import '../../features/home/logic/notifications/notification_cubit.dart';
 import '../../features/home/logic/notifications/notification_state.dart';
+import '../enum/user.dart';
 
 class CustomSalomonBottomBar extends StatelessWidget {
   const CustomSalomonBottomBar(
-      {super.key, required this.selectedIndex, required this.onTabChange});
+      {super.key,
+      required this.selectedIndex,
+      required this.onTabChange,
+      required this.userType});
   final int selectedIndex;
   final void Function(int) onTabChange;
+  final UserType userType;
 
   @override
   Widget build(BuildContext context) {
@@ -63,6 +68,15 @@ class CustomSalomonBottomBar extends StatelessWidget {
             title: Text("Orders"),
             selectedColor: Colors.orange,
           ),
+          ...userType == UserType.admin
+              ? [
+                  SalomonBottomBarItem(
+                    icon: Icon(Icons.dashboard_customize),
+                    title: Text("Dashboard"),
+                    selectedColor: Colors.red,
+                  ),
+                ]
+              : [],
           SalomonBottomBarItem(
             icon: BlocBuilder<CartCubit, CartState>(
               builder: (context, state) {

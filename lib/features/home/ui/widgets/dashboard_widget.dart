@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/services/admin_service.dart';
@@ -51,9 +52,9 @@ class _DashBoardWidgetState extends State<DashBoardWidget>
       value: _cubit,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text(
-            'Admin Dashboard',
-            style: TextStyle(fontWeight: FontWeight.bold),
+          title: Text(
+            'admin_dashboard'.tr(),
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           elevation: 0,
           bottom: TabBar(
@@ -61,14 +62,14 @@ class _DashBoardWidgetState extends State<DashBoardWidget>
             indicatorColor: Theme.of(context).colorScheme.primary,
             labelColor: Theme.of(context).colorScheme.primary,
             unselectedLabelColor: Theme.of(context).colorScheme.secondary,
-            tabs: const [
+            tabs: [
               Tab(
-                icon: Icon(Icons.category),
-                text: 'Categories',
+                icon: const Icon(Icons.category),
+                text: 'categories'.tr(),
               ),
               Tab(
-                icon: Icon(Icons.inventory),
-                text: 'Products',
+                icon: const Icon(Icons.inventory),
+                text: 'products'.tr(),
               ),
             ],
           ),
@@ -89,8 +90,8 @@ class _DashBoardWidgetState extends State<DashBoardWidget>
           },
           builder: (context, state) {
             return state.when(
-              initial: () => const Center(
-                child: Text('Welcome to Admin Dashboard'),
+              initial: () => Center(
+                child: Text('welcome_to_admin_dashboard'.tr()),
               ),
               loading: () => const Center(
                 child: CircularProgressIndicator(),
@@ -115,7 +116,7 @@ class _DashBoardWidgetState extends State<DashBoardWidget>
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      'Error: $error',
+                      'error_with_message'.tr(args: [error]),
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.error,
                         fontSize: 16,
@@ -126,7 +127,7 @@ class _DashBoardWidgetState extends State<DashBoardWidget>
                       onPressed: () {
                         _cubit.refreshProducts();
                       },
-                      child: const Text('Retry'),
+                      child: Text('retry'.tr()),
                     ),
                   ],
                 ),
@@ -140,10 +141,10 @@ class _DashBoardWidgetState extends State<DashBoardWidget>
 
   Widget _buildCategoriesTab() {
     if (groupedByCategory.isEmpty) {
-      return const Center(
+      return Center(
         child: Text(
-          'No categories available',
-          style: TextStyle(fontSize: 18),
+          'no_categories_available'.tr(),
+          style: const TextStyle(fontSize: 18),
         ),
       );
     }
@@ -189,7 +190,8 @@ class _DashBoardWidgetState extends State<DashBoardWidget>
                       ),
                     ),
                     subtitle: Text(
-                      '${categoryProducts.length} products',
+                      'products_count'
+                          .tr(args: [categoryProducts.length.toString()]),
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.secondary,
                       ),
@@ -216,7 +218,7 @@ class _DashBoardWidgetState extends State<DashBoardWidget>
                                   size: 20,
                                 ),
                                 const SizedBox(width: 8),
-                                Text(isHidden ? 'Show' : 'Hide'),
+                                Text(isHidden ? 'show'.tr() : 'hide'.tr()),
                               ],
                             ),
                           ),
@@ -229,18 +231,21 @@ class _DashBoardWidgetState extends State<DashBoardWidget>
                                   size: 20,
                                 ),
                                 const SizedBox(width: 8),
-                                Text(isActive ? 'Deactivate' : 'Activate'),
+                                Text(isActive
+                                    ? 'deactivate'.tr()
+                                    : 'activate'.tr()),
                               ],
                             ),
                           ),
-                          const PopupMenuItem(
+                          PopupMenuItem(
                             value: 'delete',
                             child: Row(
                               children: [
-                                Icon(Icons.delete, size: 20, color: Colors.red),
-                                SizedBox(width: 8),
-                                Text('Delete',
-                                    style: TextStyle(color: Colors.red)),
+                                const Icon(Icons.delete,
+                                    size: 20, color: Colors.red),
+                                const SizedBox(width: 8),
+                                Text('delete'.tr(),
+                                    style: const TextStyle(color: Colors.red)),
                               ],
                             ),
                           ),
@@ -347,7 +352,7 @@ class _DashBoardWidgetState extends State<DashBoardWidget>
                 ElevatedButton.icon(
                   onPressed: _showAddProductDialog,
                   icon: const Icon(Icons.add),
-                  label: const Text('Add Product'),
+                  label: Text('add_product'.tr()),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Theme.of(context).colorScheme.primary,
                     foregroundColor: Theme.of(context).colorScheme.secondary,
@@ -371,9 +376,9 @@ class _DashBoardWidgetState extends State<DashBoardWidget>
                           color: Theme.of(context).colorScheme.secondary,
                         ),
                         const SizedBox(height: 16),
-                        const Text(
-                          'No products available',
-                          style: TextStyle(fontSize: 18),
+                        Text(
+                          'no_products_available'.tr(),
+                          style: const TextStyle(fontSize: 18),
                         ),
                       ],
                     ),
@@ -466,13 +471,13 @@ class _DashBoardWidgetState extends State<DashBoardWidget>
                               final isActive = product.active ?? true;
 
                               return [
-                                const PopupMenuItem(
+                                PopupMenuItem(
                                   value: 'edit',
                                   child: Row(
                                     children: [
-                                      Icon(Icons.edit, size: 20),
-                                      SizedBox(width: 8),
-                                      Text('Edit'),
+                                      const Icon(Icons.edit, size: 20),
+                                      const SizedBox(width: 8),
+                                      Text('edit'.tr()),
                                     ],
                                   ),
                                 ),
@@ -487,7 +492,8 @@ class _DashBoardWidgetState extends State<DashBoardWidget>
                                         size: 20,
                                       ),
                                       const SizedBox(width: 8),
-                                      Text(isHidden ? 'Show' : 'Hide'),
+                                      Text(
+                                          isHidden ? 'show'.tr() : 'hide'.tr()),
                                     ],
                                   ),
                                 ),
@@ -502,20 +508,22 @@ class _DashBoardWidgetState extends State<DashBoardWidget>
                                         size: 20,
                                       ),
                                       const SizedBox(width: 8),
-                                      Text(
-                                          isActive ? 'Deactivate' : 'Activate'),
+                                      Text(isActive
+                                          ? 'deactivate'.tr()
+                                          : 'activate'.tr()),
                                     ],
                                   ),
                                 ),
-                                const PopupMenuItem(
+                                PopupMenuItem(
                                   value: 'delete',
                                   child: Row(
                                     children: [
-                                      Icon(Icons.delete,
+                                      const Icon(Icons.delete,
                                           size: 20, color: Colors.red),
-                                      SizedBox(width: 8),
-                                      Text('Delete',
-                                          style: TextStyle(color: Colors.red)),
+                                      const SizedBox(width: 8),
+                                      Text('delete'.tr(),
+                                          style: const TextStyle(
+                                              color: Colors.red)),
                                     ],
                                   ),
                                 ),
@@ -668,14 +676,17 @@ class _DashBoardWidgetState extends State<DashBoardWidget>
               // print('Hiding category: $categoryName');
               await AdminService.hideCategory(categoryName);
               if (mounted) {
-               showWarningToast(context: context, message: 'Category "$categoryName" hidden successfully');
+                showWarningToast(
+                    context: context,
+                    message: 'Category "$categoryName" hidden successfully');
               }
               // Refresh the products list
               _cubit.listenToFirestoreProducts();
             } catch (e) {
               // print('Error hiding category: $e');
               if (mounted) {
-              showErrorToast(context: context, message: 'Failed to hide category: $e');
+                showErrorToast(
+                    context: context, message: 'Failed to hide category: $e');
               }
             }
           },
@@ -691,14 +702,17 @@ class _DashBoardWidgetState extends State<DashBoardWidget>
               // print('Showing category: $categoryName');
               await AdminService.showCategory(categoryName);
               if (mounted) {
-               showSuccessToast(context: context, message: 'Category "$categoryName" shown successfully');
+                showSuccessToast(
+                    context: context,
+                    message: 'Category "$categoryName" shown successfully');
               }
               // Refresh the products list
               _cubit.listenToFirestoreProducts();
             } catch (e) {
               // print('Error showing category: $e');
               if (mounted) {
-               showErrorToast(context: context, message: 'Failed to show category: $e');
+                showErrorToast(
+                    context: context, message: 'Failed to show category: $e');
               }
             }
           },
@@ -714,14 +728,19 @@ class _DashBoardWidgetState extends State<DashBoardWidget>
               // print('Deactivating category: $categoryName');
               await AdminService.deactivateCategory(categoryName);
               if (mounted) {
-               showInfoToast(context: context, message: 'Category "$categoryName" deactivated successfully');
+                showInfoToast(
+                    context: context,
+                    message:
+                        'Category "$categoryName" deactivated successfully');
               }
               // Refresh the products list
               _cubit.listenToFirestoreProducts();
             } catch (e) {
               // print('Error deactivating category: $e');
               if (mounted) {
-                showErrorToast(context: context, message: 'Failed to deactivate category: $e');
+                showErrorToast(
+                    context: context,
+                    message: 'Failed to deactivate category: $e');
               }
             }
           },
@@ -737,14 +756,18 @@ class _DashBoardWidgetState extends State<DashBoardWidget>
               // print('Activating category: $categoryName');
               await AdminService.activateCategory(categoryName);
               if (mounted) {
-               showSuccessToast(context: context, message: 'Category "$categoryName" activated successfully');
+                showSuccessToast(
+                    context: context,
+                    message: 'Category "$categoryName" activated successfully');
               }
               // Refresh the products list
               _cubit.listenToFirestoreProducts();
             } catch (e) {
               // print('Error activating category: $e');
               if (mounted) {
-               showErrorToast(context: context, message: 'Failed to activate category: $e');
+                showErrorToast(
+                    context: context,
+                    message: 'Failed to activate category: $e');
               }
             }
           },
@@ -759,13 +782,16 @@ class _DashBoardWidgetState extends State<DashBoardWidget>
             try {
               await AdminService.deleteCategory(categoryName);
               if (mounted) {
-               showSuccessToast(context: context, message: 'Category "$categoryName" deleted successfully');
+                showSuccessToast(
+                    context: context,
+                    message: 'Category "$categoryName" deleted successfully');
               }
               // Refresh the products list
               _cubit.listenToFirestoreProducts();
             } catch (e) {
               if (mounted) {
-                showErrorToast(context: context, message: 'Failed to delete category: $e');
+                showErrorToast(
+                    context: context, message: 'Failed to delete category: $e');
               }
             }
           },
@@ -789,13 +815,16 @@ class _DashBoardWidgetState extends State<DashBoardWidget>
             try {
               await AdminService.hideProduct(product.id);
               if (mounted) {
-               showWarningToast(context: context, message: 'Product "${product.title}" hidden successfully');
+                showWarningToast(
+                    context: context,
+                    message: 'Product "${product.title}" hidden successfully');
               }
               // Refresh the products list
               _cubit.listenToFirestoreProducts();
             } catch (e) {
               if (mounted) {
-                showErrorToast(context: context, message: 'Failed to hide product: $e');
+                showErrorToast(
+                    context: context, message: 'Failed to hide product: $e');
               }
             }
           },
@@ -810,13 +839,16 @@ class _DashBoardWidgetState extends State<DashBoardWidget>
             try {
               await AdminService.showProduct(product.id);
               if (mounted) {
-               showSuccessToast(context: context, message: 'Product "${product.title}" shown successfully');
+                showSuccessToast(
+                    context: context,
+                    message: 'Product "${product.title}" shown successfully');
               }
               // Refresh the products list
               _cubit.listenToFirestoreProducts();
             } catch (e) {
               if (mounted) {
-                showErrorToast(context: context, message: 'Failed to show product: $e');
+                showErrorToast(
+                    context: context, message: 'Failed to show product: $e');
               }
             }
           },
@@ -831,13 +863,18 @@ class _DashBoardWidgetState extends State<DashBoardWidget>
             try {
               await AdminService.deactivateProduct(product.id);
               if (mounted) {
-               showWarningToast(context: context, message: 'Product "${product.title}" deactivated successfully');
+                showWarningToast(
+                    context: context,
+                    message:
+                        'Product "${product.title}" deactivated successfully');
               }
               // Refresh the products list
               _cubit.listenToFirestoreProducts();
             } catch (e) {
               if (mounted) {
-                showErrorToast(context: context, message: 'Failed to deactivate product: $e');
+                showErrorToast(
+                    context: context,
+                    message: 'Failed to deactivate product: $e');
               }
             }
           },
@@ -852,13 +889,18 @@ class _DashBoardWidgetState extends State<DashBoardWidget>
             try {
               await AdminService.activateProduct(product.id);
               if (mounted) {
-               showSuccessToast(context: context, message: 'Product "${product.title}" activated successfully');
+                showSuccessToast(
+                    context: context,
+                    message:
+                        'Product "${product.title}" activated successfully');
               }
               // Refresh the products list
               _cubit.listenToFirestoreProducts();
             } catch (e) {
               if (mounted) {
-                showErrorToast(context: context, message: 'Failed to activate product: $e');
+                showErrorToast(
+                    context: context,
+                    message: 'Failed to activate product: $e');
               }
             }
           },
@@ -873,12 +915,15 @@ class _DashBoardWidgetState extends State<DashBoardWidget>
             try {
               await AdminService.deleteProduct(product.id);
               if (mounted) {
-               showSuccessToast(context: context, message: 'Product "${product.title}" deleted successfully');
+                showSuccessToast(
+                    context: context,
+                    message: 'Product "${product.title}" deleted successfully');
               } // Refresh the products list
               _cubit.listenToFirestoreProducts();
             } catch (e) {
               if (mounted) {
-                showErrorToast(context: context, message: 'Failed to delete product: $e');
+                showErrorToast(
+                    context: context, message: 'Failed to delete product: $e');
               }
             }
           },
@@ -903,7 +948,7 @@ class _DashBoardWidgetState extends State<DashBoardWidget>
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(),
-              child: const Text('Cancel'),
+              child: Text('cancel'.tr()),
             ),
             ElevatedButton(
               onPressed: () async {
@@ -934,7 +979,7 @@ class _DashBoardWidgetState extends State<DashBoardWidget>
                 backgroundColor: isDestructive ? Colors.red : null,
                 foregroundColor: isDestructive ? Colors.white : null,
               ),
-              child: Text(isDestructive ? 'Delete' : 'Confirm'),
+              child: Text(isDestructive ? 'delete'.tr() : 'confirm'.tr()),
             ),
           ],
         );
@@ -952,24 +997,24 @@ class _DashBoardWidgetState extends State<DashBoardWidget>
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Add New Product'),
+          title: Text('add_new_product'.tr()),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 TextField(
                   controller: titleController,
-                  decoration: const InputDecoration(
-                    labelText: 'Product Title',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: 'product_title'.tr(),
+                    border: const OutlineInputBorder(),
                   ),
                 ),
                 const SizedBox(height: 16),
                 TextField(
                   controller: priceController,
-                  decoration: const InputDecoration(
-                    labelText: 'Price',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: 'price'.tr(),
+                    border: const OutlineInputBorder(),
                     prefixText: '\$',
                   ),
                   keyboardType: TextInputType.number,
@@ -977,9 +1022,9 @@ class _DashBoardWidgetState extends State<DashBoardWidget>
                 const SizedBox(height: 16),
                 DropdownButtonFormField<String>(
                   value: selectedCategory,
-                  decoration: const InputDecoration(
-                    labelText: 'Category',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: 'category'.tr(),
+                    border: const OutlineInputBorder(),
                   ),
                   items: groupedByCategory.keys.map((category) {
                     return DropdownMenuItem(
@@ -994,9 +1039,9 @@ class _DashBoardWidgetState extends State<DashBoardWidget>
                 const SizedBox(height: 16),
                 TextField(
                   controller: descriptionController,
-                  decoration: const InputDecoration(
-                    labelText: 'Description',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: 'description'.tr(),
+                    border: const OutlineInputBorder(),
                   ),
                   maxLines: 3,
                 ),
@@ -1006,7 +1051,7 @@ class _DashBoardWidgetState extends State<DashBoardWidget>
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
+              child: Text('cancel'.tr()),
             ),
             ElevatedButton(
               onPressed: () async {
@@ -1043,7 +1088,9 @@ class _DashBoardWidgetState extends State<DashBoardWidget>
                     }
 
                     if (context.mounted) {
-                      showSuccessToast(context: context, message: 'Product added successfully');
+                      showSuccessToast(
+                          context: context,
+                          message: 'Product added successfully');
                     }
 
                     // Refresh the products list
@@ -1055,16 +1102,20 @@ class _DashBoardWidgetState extends State<DashBoardWidget>
                     }
 
                     if (context.mounted) {
-                      showErrorToast(context: context, message: 'Failed to add product');
+                      showErrorToast(
+                          context: context,
+                          message: 'failed_to_add_product'.tr());
                     }
                   }
                 } else {
                   if (mounted) {
-                    showErrorToast(context: context, message: 'Please fill in all fields');
+                    showErrorToast(
+                        context: context,
+                        message: 'please_fill_all_fields'.tr());
                   }
                 }
               },
-              child: const Text('Add Product'),
+              child: Text('add_product'.tr()),
             ),
           ],
         );
@@ -1084,24 +1135,24 @@ class _DashBoardWidgetState extends State<DashBoardWidget>
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Edit Product'),
+          title: Text('edit_product'.tr()),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 TextField(
                   controller: titleController,
-                  decoration: const InputDecoration(
-                    labelText: 'Product Title',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: 'product_title'.tr(),
+                    border: const OutlineInputBorder(),
                   ),
                 ),
                 const SizedBox(height: 16),
                 TextField(
                   controller: priceController,
-                  decoration: const InputDecoration(
-                    labelText: 'Price',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: 'price'.tr(),
+                    border: const OutlineInputBorder(),
                     prefixText: '\$',
                   ),
                   keyboardType: TextInputType.number,
@@ -1109,9 +1160,9 @@ class _DashBoardWidgetState extends State<DashBoardWidget>
                 const SizedBox(height: 16),
                 DropdownButtonFormField<String>(
                   value: selectedCategory,
-                  decoration: const InputDecoration(
-                    labelText: 'Category',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: 'category'.tr(),
+                    border: const OutlineInputBorder(),
                   ),
                   items: groupedByCategory.keys.map((category) {
                     return DropdownMenuItem(
@@ -1126,9 +1177,9 @@ class _DashBoardWidgetState extends State<DashBoardWidget>
                 const SizedBox(height: 16),
                 TextField(
                   controller: descriptionController,
-                  decoration: const InputDecoration(
-                    labelText: 'Description',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: 'description'.tr(),
+                    border: const OutlineInputBorder(),
                   ),
                   maxLines: 3,
                 ),
@@ -1138,7 +1189,7 @@ class _DashBoardWidgetState extends State<DashBoardWidget>
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
+              child: Text('cancel'.tr()),
             ),
             ElevatedButton(
               onPressed: () async {
@@ -1180,7 +1231,9 @@ class _DashBoardWidgetState extends State<DashBoardWidget>
                   }
 
                   if (context.mounted) {
-                    showSuccessToast(context: context, message: 'Product updated successfully');
+                    showSuccessToast(
+                        context: context,
+                        message: 'product_updated_successfully'.tr());
                   }
 
                   // Refresh the products list
@@ -1192,11 +1245,13 @@ class _DashBoardWidgetState extends State<DashBoardWidget>
                   }
 
                   if (context.mounted) {
-                    showErrorToast(context: context, message: 'Failed to update product');
+                    showErrorToast(
+                        context: context,
+                        message: 'failed_to_update_product'.tr());
                   }
                 }
               },
-              child: const Text('Update Product'),
+              child: Text('update_product'.tr()),
             ),
           ],
         );
@@ -1269,7 +1324,7 @@ class _DashBoardWidgetState extends State<DashBoardWidget>
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Close'),
+              child: Text('close'.tr()),
             ),
           ],
         );

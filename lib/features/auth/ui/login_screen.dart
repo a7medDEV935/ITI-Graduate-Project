@@ -1,6 +1,7 @@
 import 'package:final_project/core/helpers/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import '../../../core/helpers/app_regex.dart';
 import '../logic/auth/auth_cubit.dart';
@@ -44,20 +45,20 @@ class LoginScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     spacing: 15,
                     children: [
-                      const AppHeader(
+                      AppHeader(
                         icon: Icons.shopping_bag,
-                        title: 'Welcome Back',
-                        subtitle: 'Sign in to continue',
+                        title: 'welcome_back'.tr(),
+                        subtitle: 'sign_in_to_continue'.tr(),
                       ),
                       MyTextField(
                         controller: context.read<AuthCubit>().emailController,
-                        hintText: "Email",
+                        hintText: "email".tr(),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return "Please enter your email";
+                            return "please_enter_email".tr();
                           }
                           if (!AppRegex.isEmailValid(value)) {
-                            return 'please Enter valid Name';
+                            return 'please_enter_valid_name'.tr();
                           }
                           return null;
                         },
@@ -65,12 +66,12 @@ class LoginScreen extends StatelessWidget {
                       MyTextField(
                         controller:
                             context.read<AuthCubit>().passwordController,
-                        hintText: "password",
+                        hintText: "password".tr(),
                         obscureText:
                             context.watch<AuthCubit>().loginPasswordObsecure,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return "please enter your password";
+                            return "please_enter_password".tr();
                           }
                           return null;
                         },
@@ -95,7 +96,7 @@ class LoginScreen extends StatelessWidget {
                             GestureDetector(
                               onTap: () => context.push(ForgotPasswordPage()),
                               child: Text(
-                                "Forgot Password?",
+                                "forgot_password".tr(),
                                 style: TextStyle(
                                   color: Theme.of(context).colorScheme.primary,
                                   fontWeight: FontWeight.bold,
@@ -119,7 +120,7 @@ class LoginScreen extends StatelessWidget {
                           ),
                           child: Center(
                             child: Text(
-                              "Login",
+                              "login".tr(),
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,
@@ -139,7 +140,7 @@ class LoginScreen extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 10),
                             child: Text(
-                              "or continue with",
+                              "or_continue_with".tr(),
                               style: TextStyle(
                                 color: Theme.of(context).colorScheme.primary,
                               ),
@@ -164,8 +165,8 @@ class LoginScreen extends StatelessWidget {
                             width: 20,
                             height: 20,
                           ),
-                          label: const Text(
-                            'Continue with Google',
+                          label: Text(
+                            'continue_with_google'.tr(),
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
@@ -186,7 +187,7 @@ class LoginScreen extends StatelessWidget {
                         spacing: 5,
                         children: [
                           Text(
-                            "Don't have an account",
+                            "dont_have_account".tr(),
                             style: TextStyle(
                               fontSize: 13,
                               color: Theme.of(context).colorScheme.primary,
@@ -195,7 +196,7 @@ class LoginScreen extends StatelessWidget {
                           GestureDetector(
                             onTap: onRegisterTap,
                             child: Text(
-                              "Register now",
+                              "register_now".tr(),
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Theme.of(context).colorScheme.primary,

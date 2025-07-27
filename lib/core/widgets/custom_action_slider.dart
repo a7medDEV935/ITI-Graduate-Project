@@ -1,4 +1,5 @@
 import 'package:action_slider/action_slider.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class CustomActionSlider extends StatelessWidget {
@@ -30,9 +31,9 @@ class CustomActionSlider extends StatelessWidget {
           await onSuccess();
           await Future.delayed(const Duration(seconds: 1));
         },
-        child: const Center(
+        child: Center(
           child: Text(
-            'Slide to Checkout',
+            'slide_to_checkout'.tr(),
             style: TextStyle(fontSize: 18),
           ),
         ),

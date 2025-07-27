@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import '../../../core/helpers/app_regex.dart';
 import '../../../core/widgets/toast.dart';
@@ -68,10 +69,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage>
 
   String? _validateEmail(String? value) {
     if (value == null || value.isEmpty) {
-      return "Please enter your email";
+      return "please_enter_email".tr();
     }
     if (!AppRegex.isEmailValid(value)) {
-      return "Please enter a valid email";
+      return "please_enter_valid_email".tr();
     }
     return null;
   }
@@ -97,7 +98,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage>
         // Show success message
         if (mounted) {
           showSuccessToast(
-              context: context, message: "Reset link sent successfully");
+              context: context, message: "reset_link_sent_successfully".tr());
           // Clear the email field
           _emailController.clear();
           await Future.delayed(const Duration(seconds: 4));
@@ -110,17 +111,13 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage>
         // Show error message
         if (mounted) {
           showErrorToast(
-              context: context,
-              message:
-                  "No account found with this email address. Please check your email or create a new account");
+              context: context, message: "no_account_found_error".tr());
         }
       }
     } catch (e) {
       if (mounted) {
         showErrorToast(
-            context: context,
-            message:
-                "No account found with this email address. Please check your email or create a new account");
+            context: context, message: "no_account_found_error".tr());
       }
     } finally {
       if (mounted) {

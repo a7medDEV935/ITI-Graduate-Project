@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import 'core/di/dependency_injection.dart';
 import 'core/theme/cubit/theme/theme_cubit.dart';
@@ -42,11 +43,14 @@ class _RootAppState extends State<RootApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'app_title'.tr(),
       debugShowCheckedModeBanner: false,
       theme: lightMode,
       darkTheme: darkMode,
       themeMode: _themeMode,
+      localizationsDelegates: context.localizationDelegates,
+      supportedLocales: context.supportedLocales,
+      locale: context.locale,
       home: SplashScreen(nexScreen: widget.nextScreen),
     );
   }

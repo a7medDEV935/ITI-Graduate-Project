@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ResetLinkButton extends StatelessWidget {
   final bool isLoading;
@@ -37,7 +38,7 @@ class ResetLinkButton extends StatelessWidget {
                 ),
               )
             : Text(
-                "Send Reset Link",
+                "send_reset_link".tr(),
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
       ),

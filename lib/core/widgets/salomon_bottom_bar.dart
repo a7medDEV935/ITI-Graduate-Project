@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../../features/home/logic/cart/cart_cubit.dart';
 import '../../features/home/logic/cart/cart_state.dart';
 import '../../features/home/logic/notifications/notification_cubit.dart';
@@ -19,15 +20,17 @@ class CustomSalomonBottomBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currentLocale = context.locale;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       child: SalomonBottomBar(
+        key: ValueKey(currentLocale.toString()),
         currentIndex: selectedIndex,
         onTap: onTabChange,
         items: [
           SalomonBottomBarItem(
             icon: Icon(Icons.home),
-            title: Text("Home"),
+            title: Text("home".tr()),
             selectedColor: Colors.purple,
           ),
           SalomonBottomBarItem(
@@ -65,14 +68,14 @@ class CustomSalomonBottomBar extends StatelessWidget {
                 ],
               );
             }),
-            title: Text("Orders"),
+            title: Text("orders".tr()),
             selectedColor: Colors.orange,
           ),
           ...userType == UserType.admin
               ? [
                   SalomonBottomBarItem(
                     icon: Icon(Icons.dashboard_customize),
-                    title: Text("Dashboard"),
+                    title: Text("dashboard".tr()),
                     selectedColor: Colors.red,
                   ),
                 ]
@@ -117,12 +120,12 @@ class CustomSalomonBottomBar extends StatelessWidget {
                 );
               },
             ),
-            title: Text("Cart"),
+            title: Text("cart".tr()),
             selectedColor: Colors.green,
           ),
           SalomonBottomBarItem(
             icon: Icon(Icons.person),
-            title: Text("Profile"),
+            title: Text("profile".tr()),
             selectedColor: Colors.blue,
           ),
         ],

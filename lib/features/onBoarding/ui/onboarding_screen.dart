@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../../../app.dart';
@@ -27,18 +28,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       _buildOnBoardingItem(
         imageUrl: "assets/images/wishlist.svg",
         height: 350,
-        text: "Discover a wide range of products at unbeatable prices",
+        text: "discover_products".tr(),
       ),
       _buildOnBoardingItem(
         imageUrl: "assets/images/online-shopping.svg",
         height: 350,
-        text: "Get your orders delivered quickly and safely to your doorstep.",
+        text: "get_orders_delivered".tr(),
       ),
       _buildOnBoardingItem(
         imageUrl: "assets/images/purchase.svg",
         height: 300,
-        text:
-            "Shop with confidence using our trusted and secure payment methods",
+        text: "shop_with_confidence".tr(),
       ),
     ];
     assert(pagesList.length <= 3, 'You can only have up to 3 pages');
@@ -90,7 +90,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           curve: Curves.easeInOut,
                         );
                       },
-                      child: _selectedIndex == 0 ? Text("Skip") : Text("back"),
+                      child: _selectedIndex == 0
+                          ? Text("skip".tr())
+                          : Text("back".tr()),
                     ),
                   ),
                 ),
@@ -141,8 +143,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         }
                       },
                       child: _selectedIndex == pagesList.length - 1
-                          ? Text("Done")
-                          : Text("Next"),
+                          ? Text("done".tr())
+                          : Text("next".tr()),
                     ),
                   ),
                 ),

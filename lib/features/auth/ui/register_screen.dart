@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/helpers/app_regex.dart';
@@ -62,30 +63,30 @@ class RegisterScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     spacing: 15,
                     children: [
-                      const AppHeader(
+                      AppHeader(
                         icon: Icons.person_add,
-                        title: 'Create Account',
-                        subtitle: 'Sign up to get started',
+                        title: 'create_account'.tr(),
+                        subtitle: 'sign_up_get_started'.tr(),
                       ),
                       MyTextField(
                         controller: context.read<AuthCubit>().nameController,
-                        hintText: "Name",
+                        hintText: "name".tr(),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'please Enter valid Name';
+                            return 'please_enter_valid_name'.tr();
                           }
                           return null;
                         },
                       ),
                       MyTextField(
                         controller: context.read<AuthCubit>().emailController,
-                        hintText: "Email",
+                        hintText: "email".tr(),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return "Please enter your email";
+                            return "please_enter_email".tr();
                           }
                           if (!AppRegex.isEmailValid(value)) {
-                            return 'please Enter valid Name';
+                            return 'please_enter_valid_name'.tr();
                           }
                           return null;
                         },
@@ -93,12 +94,12 @@ class RegisterScreen extends StatelessWidget {
                       MyTextField(
                         controller:
                             context.read<AuthCubit>().passwordController,
-                        hintText: "password",
+                        hintText: "password".tr(),
                         obscureText:
                             context.watch<AuthCubit>().loginPasswordObsecure,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return "please enter your password";
+                            return "please_enter_password".tr();
                           }
                           return null;
                         },
@@ -118,20 +119,20 @@ class RegisterScreen extends StatelessWidget {
                       MyTextField(
                         controller:
                             context.read<AuthCubit>().confirmPasswordController,
-                        hintText: "Confirm Password",
+                        hintText: "confirm_password".tr(),
                         obscureText: context
                             .watch<AuthCubit>()
                             .registerPasswordConfirmationObsecure,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return "Please confirm your password";
+                            return "please_confirm_password".tr();
                           }
                           if (value !=
                               context
                                   .read<AuthCubit>()
                                   .passwordController
                                   .text) {
-                            return "Passwords do not match";
+                            return "passwords_do_not_match".tr();
                           }
                           return null;
                         },
@@ -159,15 +160,13 @@ class RegisterScreen extends StatelessWidget {
                           if (!isFormValid) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                content:
-                                    Text("Please fill all fields correctly"),
+                                content: Text("fill_all_fields".tr()),
                               ),
                             );
                           } else if (!canRegister) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                content:
-                                    Text("Password does not meet requirements"),
+                                content: Text("password_requirements".tr()),
                               ),
                             );
                           }
@@ -180,7 +179,7 @@ class RegisterScreen extends StatelessWidget {
                           ),
                           child: Center(
                             child: Text(
-                              "Sign Up",
+                              "sign_up".tr(),
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,
@@ -202,21 +201,22 @@ class RegisterScreen extends StatelessWidget {
                         spacing: 5,
                         children: [
                           Text(
-                            "Already have an account",
+                            "already_have_account".tr(),
                             style: TextStyle(
+                              fontSize: 13,
                               color: Theme.of(context).colorScheme.primary,
                             ),
                           ),
                           GestureDetector(
                             onTap: onLoginTap,
                             child: Text(
-                              "Login now",
+                              "login".tr(),
                               style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Theme.of(context).colorScheme.primary,
-                              ),
+                                  fontWeight: FontWeight.bold,
+                                  color: Theme.of(context).colorScheme.primary,
+                                  fontSize: 13),
                             ),
-                          )
+                          ),
                         ],
                       ),
                     ],

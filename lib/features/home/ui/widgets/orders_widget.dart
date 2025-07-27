@@ -1,5 +1,6 @@
 import 'package:final_project/core/helpers/extensions.dart';
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import '../../../../core/widgets/custom_pull_to_refresh.dart';
 import '../../../../core/widgets/toast.dart';
@@ -27,16 +28,14 @@ class _OrdersWidgetState extends State<OrdersWidget> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Clear All Orders'),
-          content: const Text(
-            'Are you sure you want to clear all your order history? This action cannot be undone.',
-          ),
+          title: Text('clear_all_orders'.tr()),
+          content: Text('clear_orders_confirm'.tr()),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text('Cancel'),
+              child: Text('cancel'.tr()),
             ),
             ElevatedButton(
               onPressed: () {
@@ -44,7 +43,8 @@ class _OrdersWidgetState extends State<OrdersWidget> {
                 OrderService.clearOrders().then((_) {
                   setState(() {});
                   if (context.mounted) {
-                   showWarningToast(context: context, message: 'All orders cleared');
+                    showWarningToast(
+                        context: context, message: 'all_orders_cleared'.tr());
                   }
                 });
               },
@@ -52,7 +52,7 @@ class _OrdersWidgetState extends State<OrdersWidget> {
                 backgroundColor: Colors.red,
                 foregroundColor: Colors.white,
               ),
-              child: const Text('Clear All'),
+              child: Text('clear_all'.tr()),
             ),
           ],
         );
@@ -76,11 +76,7 @@ class _OrdersWidgetState extends State<OrdersWidget> {
         child: CustomScrollView(
           slivers: [
             SliverAppBar.medium(
-              title: Text(
-                'My Orders',
-                style:
-                    theme.textTheme.titleLarge?.copyWith(color: Colors.white),
-              ),
+              title: Text('My Orders'),
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               elevation: 2,
               shadowColor: Colors.black.withAlpha(10),
@@ -96,13 +92,13 @@ class _OrdersWidgetState extends State<OrdersWidget> {
                       }
                     },
                     itemBuilder: (context) => [
-                      const PopupMenuItem(
+                      PopupMenuItem(
                         value: 'clear_all',
                         child: Row(
                           children: [
                             Icon(Icons.clear_all, color: Colors.red),
                             SizedBox(width: 8),
-                            Text('Clear All Orders'),
+                            Text('clear_all_orders'.tr()),
                           ],
                         ),
                       ),

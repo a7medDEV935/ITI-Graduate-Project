@@ -10,7 +10,7 @@ SliverAppBar customAnimationAppbar({
 }) {
   return SliverAppBar(
     pinned: true,
-    backgroundColor: Colors.grey.shade900,
+    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
     elevation: 0,
     expandedHeight: MediaQuery.of(context).size.height / 4.7,
     actions: isActions ? actions : null, // Use actions if isActions is true

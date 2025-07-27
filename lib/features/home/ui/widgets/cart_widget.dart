@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/services/notifications_service.dart';
@@ -91,7 +92,7 @@ class _CartWidgetState extends State<CartWidget> {
               SliverAppBar.medium(
                 title: Row(
                   children: [
-                    const Text("Cart"),
+                    Text("cart".tr()),
                     if (state is CartLoaded && state.totalItems > 0) ...[
                       const SizedBox(width: 8),
                       Container(
@@ -138,8 +139,8 @@ class _CartWidgetState extends State<CartWidget> {
                         const Icon(Icons.shopping_cart,
                             size: 55, color: Colors.grey),
                         const SizedBox(height: 10),
-                        const Text("Your Cart is empty"),
-                        const Text("Add some products to get started"),
+                        Text("your_cart_empty".tr()),
+                        Text("add_products_to_start".tr()),
                       ],
                     ),
                   ),
@@ -163,10 +164,10 @@ class _CartWidgetState extends State<CartWidget> {
                   ),
                 ),
               ] else
-                const SliverFillRemaining(
+                SliverFillRemaining(
                   hasScrollBody: false,
                   child: Center(
-                    child: Text("Something went wrong"),
+                    child: Text("something_went_wrong".tr()),
                   ),
                 ),
             ],
@@ -317,13 +318,13 @@ class _CartWidgetState extends State<CartWidget> {
     final shouldCheckout = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text("Confirm Checkout"),
+        title: Text("confirm_checkout".tr()),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              "Are you sure you want to proceed with checkout?",
+            Text(
+              "confirm_checkout_question".tr(),
             ),
             const SizedBox(height: 16),
             Container(
@@ -336,21 +337,22 @@ class _CartWidgetState extends State<CartWidget> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Order Summary",
+                    "order_summary".tr(),
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Colors.grey[700],
                     ),
                   ),
                   const SizedBox(height: 8),
-                  Text("Items: ${state.totalItems}"),
-                  Text("Total: \$${state.totalAmount.toStringAsFixed(2)}"),
+                  Text("items_count".tr(args: [state.totalItems.toString()])),
+                  Text("total_amount"
+                      .tr(args: [state.totalAmount.toStringAsFixed(2)])),
                 ],
               ),
             ),
             const SizedBox(height: 12),
-            const Text(
-              "Your cart will be cleared after checkout.",
+            Text(
+              "cart_cleared_after_checkout".tr(),
               style: TextStyle(
                 color: Colors.orange,
                 fontSize: 12,
@@ -361,7 +363,7 @@ class _CartWidgetState extends State<CartWidget> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text("Cancel"),
+            child: Text("cancel".tr()),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(

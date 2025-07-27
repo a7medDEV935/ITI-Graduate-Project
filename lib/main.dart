@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -28,6 +29,7 @@ Future<void> checkCurrentThemeMode() async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await EasyLocalization.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await setupGetIt();
   await checkOnboardingComplete();
@@ -36,5 +38,25 @@ void main() async {
   log("🔒 Notification Permission Granted: ${NotificationService.permissionGranted}");
 
   Widget nextScreen = isOnboardingComplete ? MyApp() : OnboardingScreen();
-  runApp(RootApp(nextScreen: nextScreen));
+
+  runApp(
+    EasyLocalization(
+      supportedLocales: const [
+        Locale(AppLocale.english),
+        Locale(AppLocale.arabic),
+        Locale(AppLocale.german),
+        Locale(AppLocale.french),
+        Locale(AppLocale.spanish),
+        Locale(AppLocale.italian),
+        Locale(AppLocale.japanese),
+        Locale(AppLocale.korean),
+        Locale(AppLocale.chinese),
+      ],
+      path: 'assets/l10n',
+      saveLocale: true,
+      fallbackLocale: const Locale(AppLocale.english),
+      startLocale: const Locale(AppLocale.english),
+      child: RootApp(nextScreen: nextScreen),
+    ),
+  );
 }

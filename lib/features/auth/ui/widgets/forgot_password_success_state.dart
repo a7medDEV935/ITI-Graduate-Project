@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ForgotPasswordSuccessState extends StatelessWidget {
   final VoidCallback onResendPressed;
@@ -25,7 +26,7 @@ class ForgotPasswordSuccessState extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               Text(
-                "Reset link sent!",
+                "reset_link_sent".tr(),
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -35,7 +36,7 @@ class ForgotPasswordSuccessState extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               Text(
-                "We have sent a password reset link to your email address. Please check your inbox and follow the instructions",
+                "reset_link_sent_message".tr(),
                 style: TextStyle(
                   fontSize: 14,
                   color: Theme.of(context).colorScheme.inversePrimary,
@@ -50,7 +51,7 @@ class ForgotPasswordSuccessState extends StatelessWidget {
         TextButton(
           onPressed: onResendPressed,
           child: Text(
-            "Send Reset Link",
+            "send_reset_link".tr(),
             style: TextStyle(
               color: Theme.of(context).colorScheme.primary,
               fontSize: 16,

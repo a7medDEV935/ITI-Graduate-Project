@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ForgotPasswordHeader extends StatelessWidget {
   final VoidCallback onBackPressed;
@@ -19,7 +20,7 @@ class ForgotPasswordHeader extends StatelessWidget {
             ),
           ),
           Text(
-            "Back to Login",
+            "back_to_login".tr(),
             style: TextStyle(
               color: Theme.of(context).colorScheme.primary,
               fontSize: 16,

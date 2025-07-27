@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import 'my_textfield.dart';
 
@@ -22,7 +23,7 @@ class ForgotPasswordEmailForm extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Enter your email",
+            "enter_your_email".tr(),
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
@@ -32,7 +33,7 @@ class ForgotPasswordEmailForm extends StatelessWidget {
           const SizedBox(height: 12),
           MyTextField(
             controller: emailController,
-            hintText: "Email",
+            hintText: "email".tr(),
             obscureText: false,
             validator: validator,
             suffixIcon: Icon(

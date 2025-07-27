@@ -1,5 +1,6 @@
 import 'package:final_project/core/helpers/extensions.dart';
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/constants/app_strings.dart';
@@ -42,9 +43,9 @@ class _SettingsScreenState extends State<ProfileWidget> {
   @override
   Widget build(BuildContext context) {
     bool darkModeEnabled = context.watch<ThemeCubit>().state == ThemeMode.dark;
-    // String language = localeNamesMap[context.locale.toString()] ??
-    // LanguageNames.defaultLocale;
-    String language = LanguageNames.defaultLocale;
+    String language = localeNamesMap[context.locale.toString()] ??
+        LanguageNames.defaultLocale;
+    // String language = LanguageNames.defaultLocale;
     return SafeArea(
       child: CustomScrollView(
         slivers: <Widget>[
@@ -61,12 +62,12 @@ class _SettingsScreenState extends State<ProfileWidget> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildSectionHeader('Account'),
+                  _buildSectionHeader('account'.tr()),
                   _buildSettingsCard([
                     _buildSettingsTile(
                       icon: Icons.security,
-                      title: 'Privacy & Security',
-                      subtitle: 'Control your privacy settings',
+                      title: 'privacy_security'.tr(),
+                      subtitle: 'control_privacy_settings'.tr(),
                       onTap: () {
                         Navigator.push(
                           context,
@@ -80,12 +81,12 @@ class _SettingsScreenState extends State<ProfileWidget> {
                   const SizedBox(height: 24),
 
                   // Preferences Section
-                  _buildSectionHeader('Preferences'),
+                  _buildSectionHeader('preferences'.tr()),
                   _buildSettingsCard([
                     _buildSwitchTile(
                       icon: Icons.notifications_outlined,
-                      title: 'Notifications',
-                      subtitle: 'Enable Push Notifications',
+                      title: 'notifications'.tr(),
+                      subtitle: 'enable_push_notifications'.tr(),
                       value: context
                           .watch<NotificationCubit>()
                           .isNotificationEnabled,
@@ -95,8 +96,8 @@ class _SettingsScreenState extends State<ProfileWidget> {
                     ),
                     _buildSwitchTile(
                       icon: Icons.dark_mode_outlined,
-                      title: 'Dark Mode',
-                      subtitle: 'Enable dark mode',
+                      title: 'dark_mode'.tr(),
+                      subtitle: 'enable_dark_mode'.tr(),
                       value: darkModeEnabled,
                       onChanged: (value) {
                         getIt<ThemeCubit>().toggleTheme();
@@ -104,8 +105,8 @@ class _SettingsScreenState extends State<ProfileWidget> {
                     ),
                     _buildSwitchTile(
                       icon: Icons.fingerprint,
-                      title: 'Biometric Authentication',
-                      subtitle: 'Use Face ID or Fingerprint for quick access',
+                      title: 'biometric_auth'.tr(),
+                      subtitle: 'use_biometrics'.tr(),
                       value: _biometricsEnabled,
                       onChanged: (value) {
                         setState(() {
@@ -116,61 +117,63 @@ class _SettingsScreenState extends State<ProfileWidget> {
                   ]),
                   const SizedBox(height: 24),
                   // Display Section
-                  _buildSectionHeader('Display & Accessibility'),
+                  _buildSectionHeader('display_accessibility'.tr()),
                   _buildSettingsCard(
                     [
                       _buildDropdownTile(
                         icon: Icons.language,
-                        title: 'language',
+                        title: 'language'.tr(),
                         value: language,
                         items: _languages,
                         isFlagShow: true,
                         onChanged: (value) {
-                          // if (value == null ||
-                          //     context.locale == Locale(languageNamesMap[value]!)) {
-                          //   return;
-                          // }
-                          // setState(() {
-                          //   language = value;
-                          //   context.setLocale(Locale(languageNamesMap[value]!));
-                          // });
+                          if (value == null ||
+                              context.locale ==
+                                  Locale(languageNamesMap[value]!)) {
+                            return;
+                          }
+                          setState(() {
+                            language = value;
+                            context.setLocale(Locale(languageNamesMap[value]!));
+                          });
                         },
                       ),
                     ],
                   ),
                   const SizedBox(height: 16),
                   // Support Section
-                  _buildSectionHeader('Support & About'),
+                  _buildSectionHeader('support_about'.tr()),
                   _buildSettingsCard([
-                  _buildSettingsTile(
+                    _buildSettingsTile(
                       icon: Icons.help_outline,
-                      title: 'Help & Support',
-                      subtitle: 'Get help and support for any issues',
+                      title: 'help_support'.tr(),
+                      subtitle: 'get_help_support'.tr(),
                       onTap: () => context.push(HelpSupportScreen()),
                     ),
                     _buildSettingsTile(
                       icon: Icons.feedback_outlined,
-                      title: 'Send Feedback',
-                      subtitle: 'Help us improve the app',
+                      title: 'send_feedback'.tr(),
+                      subtitle: 'help_us_improve'.tr(),
                       onTap: () => context.push(SendFeedbackScreen()),
                     ),
                     _buildSettingsTile(
                       icon: Icons.info_outline,
-                      title: 'About',
-                      subtitle: 'App Version and information',
+                      title: 'about'.tr(),
+                      subtitle: 'app_version_info'.tr(),
                       onTap: () {
                         _showAboutDialog();
                       },
                     ),
                     _buildSettingsTile(
                       icon: Icons.logout,
-                      title: 'Sign Out',
-                      subtitle: 'Log out of your account',
+                      title: 'sign_out'.tr(),
+                      subtitle: 'logout_of_account'.tr(),
                       onTap: () async {
                         await context.read<AuthCubit>().logout();
                         if (context.mounted) {
                           showSuccessToast(
-                              context: context, message: "Logout successfully");
+                              context: context,
+                              message: "logout_successfully".tr());
                         }
                       },
                       textColor: Colors.red,

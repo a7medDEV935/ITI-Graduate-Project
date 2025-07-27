@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ForgotPasswordTitle extends StatelessWidget {
   const ForgotPasswordTitle({super.key});
@@ -8,7 +9,7 @@ class ForgotPasswordTitle extends StatelessWidget {
     return Column(
       children: [
         Text(
-          "Forgot Password",
+          "forgot_password".tr(),
           style: TextStyle(
             fontSize: 28,
             fontWeight: FontWeight.bold,
@@ -20,7 +21,7 @@ class ForgotPasswordTitle extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Text(
-            "Don't worry! It happens. Please enter the email address associated with your account",
+            "forgot_password_message".tr(),
             style: TextStyle(
               fontSize: 16,
               color: Theme.of(context).colorScheme.inversePrimary,

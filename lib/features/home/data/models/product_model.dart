@@ -13,6 +13,8 @@ class ProductModel {
   final List<String> images;
   final String creationAt;
   final String updatedAt;
+  final bool? active;
+  final bool? hidden;
 
   ProductModel({
     required this.id,
@@ -24,6 +26,8 @@ class ProductModel {
     required this.images,
     required this.creationAt,
     required this.updatedAt,
+    this.active,
+    this.hidden,
   });
 
   factory ProductModel.fromJson(Map<String, dynamic> json) =>
@@ -40,6 +44,8 @@ class Category {
   final String image;
   final String creationAt;
   final String updatedAt;
+  final bool? active;
+  final bool? hidden;
 
   Category({
     required this.id,
@@ -48,11 +54,12 @@ class Category {
     required this.image,
     required this.creationAt,
     required this.updatedAt,
+    this.active,
+    this.hidden,
   });
 
   factory Category.fromJson(Map<String, dynamic> json) =>
       _$CategoryFromJson(json);
-
 
   Map<String, dynamic> toJson() => _$CategoryToJson(this);
 }

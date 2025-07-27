@@ -159,8 +159,22 @@ class ProductSearchDelegate extends SearchDelegate<ProductModel?> {
             product.description.toLowerCase().contains(searchLower);
       }).toList();
     }
+
+    // Filter out hidden/inactive products and categories even for admin users in search
+    final visibleProducts = searchResults.where((product) {
+      final isProductActive = product.active ?? true;
+      final isProductHidden = product.hidden ?? false;
+      final isCategoryActive = product.category.active ?? true;
+      final isCategoryHidden = product.category.hidden ?? false;
+
+      return isProductActive &&
+          !isProductHidden &&
+          isCategoryActive &&
+          !isCategoryHidden;
+    }).toList();
+
     final filter = ProductFilter(sortBy: currentSort);
-    return filter.filterAndSort(searchResults);
+    return filter.filterAndSort(visibleProducts);
   }
 
   Widget _buildEmptyState(BuildContext context, {required bool isNoResults}) {

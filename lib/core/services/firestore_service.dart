@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../features/home/data/models/product_model.dart';
+import '../../core/enum/user.dart';
+import 'admin_service.dart';
 
 /// A generic Firestore service for CRUD operations on any collection.
 class FirestoreService {
@@ -54,12 +56,30 @@ class FirestoreService {
         );
   }
 
+  /// Get products filtered by user type (admin sees all, users see only active/visible)
+  static Stream<List<ProductModel>> getProductsForUser(UserType userType) {
+    return getProductsTyped().map((products) {
+      if (userType == UserType.admin) {
+        return AdminService.getAllProductsForAdmin(products);
+      } else {
+        return AdminService.filterProductsForUsers(products);
+      }
+    });
+  }
+
   static Future<void> updateDocument(
     String collection,
     String docId,
     Map<String, dynamic> data,
-  ) {
-    return _db.collection(collection).doc(docId).update(data);
+  ) async {
+    // print( 'FirestoreService: Updating document in $collection/$docId with data: $data');
+    try {
+      await _db.collection(collection).doc(docId).update(data);
+      // print('FirestoreService: Document update successful');
+    } catch (e) {
+      // print('FirestoreService: Document update failed: $e');
+      rethrow;
+    }
   }
 
   static Future<void> deleteDocument(String collection, String docId) {

@@ -41,7 +41,7 @@ class _CartWidgetState extends State<CartWidget> {
         ),
         builder: (context) => SafeArea(
           child: SizedBox(
-            height: MediaQuery.of(context).size.height * 0.25,
+            height: MediaQuery.of(context).size.height * 0.3,
             child: Padding(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
               child: _buildCheckoutSection(context, state),
@@ -257,7 +257,9 @@ class _CartWidgetState extends State<CartWidget> {
             icon: const Icon(Icons.delete_outline, color: Colors.red),
             onPressed: () {
               context.read<CartCubit>().removeFromCart(product);
-              showWarningToast(context: context, message: "${product.title} was removed from cart");
+              showWarningToast(
+                  context: context,
+                  message: "${product.title} was removed from cart");
             },
           ),
         ],
@@ -398,12 +400,16 @@ class _CartWidgetState extends State<CartWidget> {
           }
 
           if (context.mounted) {
-           showSuccessToast(context: context, message: "Order #${orderId.substring(orderId.length - 8)} placed successfully!");
+            showSuccessToast(
+                context: context,
+                message:
+                    "Order #${orderId.substring(orderId.length - 8)} placed successfully!");
           }
         }
       } catch (e) {
         if (context.mounted) {
-          showErrorToast(context: context, message: "Failed to place order: $e");
+          showErrorToast(
+              context: context, message: "Failed to place order: $e");
         }
       }
     }

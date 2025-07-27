@@ -26,14 +26,53 @@ class HomeWidgetSuccess extends StatefulWidget {
 class _HomeWidgetSuccessState extends State<HomeWidgetSuccess> {
   final ValueNotifier<ViewMode> _viewModeNotifier =
       ValueNotifier(ViewMode.grid);
-  final Map<String, List<ProductModel>> groupedByCategory = {};
-  late final List<String> _categoryKeys;
+  Map<String, List<ProductModel>> groupedByCategory = {};
+  List<String> _categoryKeys = [];
 
   SortBy _selectedSort = SortBy.aToZ;
 
   List<ProductModel> get _filteredProducts {
     final filter = ProductFilter(sortBy: _selectedSort);
-    return filter.filterAndSort(widget.products);
+    // Always filter out hidden/inactive products and categories for the home screen
+    // regardless of user type (admin or regular user)
+    final visibleProducts = widget.products.where((product) {
+      final isProductActive = product.active ?? true;
+      final isProductHidden = product.hidden ?? false;
+      final isCategoryActive = product.category.active ?? true;
+      final isCategoryHidden = product.category.hidden ?? false;
+
+      return isProductActive &&
+          !isProductHidden &&
+          isCategoryActive &&
+          !isCategoryHidden;
+    }).toList();
+
+    return filter.filterAndSort(visibleProducts);
+  }
+
+  void _groupProductsByCategory() {
+    groupedByCategory.clear();
+
+    // Debug: Print filtering information
+    // print('=== Grouping Products by Category ===');
+    // print('Total filtered products: ${_filteredProducts.length}');
+
+    for (var product in _filteredProducts) {
+      final categoryName = product.category.name;
+
+      // Debug: Print product and category status
+      // print('Product: ${product.title}');
+      // print('  Category: $categoryName');
+      // print( '  Product active: ${product.active ?? true}, hidden: ${product.hidden ?? false}');
+      // print('  Category active: ${product.category.active ?? true}, hidden: ${product.category.hidden ?? false}');
+
+      groupedByCategory.putIfAbsent(categoryName, () => []);
+      groupedByCategory[categoryName]!.add(product);
+    }
+    _categoryKeys = groupedByCategory.keys.toList();
+
+    // print('Categories with products: ${_categoryKeys.join(', ')}');
+    // print('=== End Grouping ===');
   }
 
   final List<Map<String, dynamic>> categoryIcons = [
@@ -102,12 +141,15 @@ class _HomeWidgetSuccessState extends State<HomeWidgetSuccess> {
   @override
   void initState() {
     super.initState();
-    for (var product in widget.products) {
-      final categoryName = product.category.name;
-      groupedByCategory.putIfAbsent(categoryName, () => []);
-      groupedByCategory[categoryName]!.add(product);
+    _groupProductsByCategory();
+  }
+
+  @override
+  void didUpdateWidget(HomeWidgetSuccess oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.products != widget.products) {
+      _groupProductsByCategory();
     }
-    _categoryKeys = groupedByCategory.keys.toList();
   }
 
   @override
@@ -137,7 +179,8 @@ class _HomeWidgetSuccessState extends State<HomeWidgetSuccess> {
         ),
       );
     } catch (e) {
-      showErrorToast(context: context, message: 'Error navigating to product details: $e');
+      showErrorToast(
+          context: context, message: 'Error navigating to product details: $e');
     }
   }
 
@@ -302,6 +345,7 @@ class _HomeWidgetSuccessState extends State<HomeWidgetSuccess> {
                               if (newValue != null) {
                                 setState(() {
                                   _selectedSort = newValue;
+                                  _groupProductsByCategory(); // Regroup categories after sort change
                                 });
                               }
                             },
@@ -400,6 +444,10 @@ class _HomeWidgetSuccessState extends State<HomeWidgetSuccess> {
               );
             },
           ),
+          // SliverList.builder(
+          //   itemBuilder: (context, idx) => Text(idx.toString()),
+          //   itemCount: 20,
+          // )
         ],
       ),
     );

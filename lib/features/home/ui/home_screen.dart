@@ -21,8 +21,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
-  final UserType currentUserType = getIt<FirebaseRepo>().userType;
-
   @override
   void initState() {
     super.initState();
@@ -30,6 +28,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Get user type dynamically each time the widget builds
+    final UserType currentUserType = getIt<FirebaseRepo>().userType;
+
     final List<Widget> screens = [
       const HomeWidget(),
       const OrdersWidget(),

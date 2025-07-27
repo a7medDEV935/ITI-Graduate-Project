@@ -28,7 +28,20 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
 
   List<ProductModel> get _filteredProducts {
     final filter = ProductFilter(sortBy: _selectedSort);
-    return filter.filterAndSort(widget.products);
+    // Filter out hidden/inactive products even for admin users in category screens
+    final visibleProducts = widget.products.where((product) {
+      final isProductActive = product.active ?? true;
+      final isProductHidden = product.hidden ?? false;
+      final isCategoryActive = product.category.active ?? true;
+      final isCategoryHidden = product.category.hidden ?? false;
+
+      return isProductActive &&
+          !isProductHidden &&
+          isCategoryActive &&
+          !isCategoryHidden;
+    }).toList();
+
+    return filter.filterAndSort(visibleProducts);
   }
 
   @override

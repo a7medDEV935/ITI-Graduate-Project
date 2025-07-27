@@ -17,6 +17,8 @@ ProductModel _$ProductModelFromJson(Map<String, dynamic> json) => ProductModel(
           (json['images'] as List<dynamic>).map((e) => e as String).toList(),
       creationAt: json['creationAt'] as String,
       updatedAt: json['updatedAt'] as String,
+      active: json['active'] as bool?,
+      hidden: json['hidden'] as bool?,
     );
 
 Map<String, dynamic> _$ProductModelToJson(ProductModel instance) =>
@@ -30,6 +32,8 @@ Map<String, dynamic> _$ProductModelToJson(ProductModel instance) =>
       'images': instance.images,
       'creationAt': instance.creationAt,
       'updatedAt': instance.updatedAt,
+      'active': instance.active,
+      'hidden': instance.hidden,
     };
 
 Category _$CategoryFromJson(Map<String, dynamic> json) => Category(
@@ -39,6 +43,8 @@ Category _$CategoryFromJson(Map<String, dynamic> json) => Category(
       image: json['image'] as String,
       creationAt: json['creationAt'] as String,
       updatedAt: json['updatedAt'] as String,
+      active: json['active'] as bool?,
+      hidden: json['hidden'] as bool?,
     );
 
 Map<String, dynamic> _$CategoryToJson(Category instance) => <String, dynamic>{
@@ -48,4 +54,6 @@ Map<String, dynamic> _$CategoryToJson(Category instance) => <String, dynamic>{
       'image': instance.image,
       'creationAt': instance.creationAt,
       'updatedAt': instance.updatedAt,
+      'active': instance.active,
+      'hidden': instance.hidden,
     };

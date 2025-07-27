@@ -10,13 +10,27 @@ class FirebaseRepo implements AuthRepo {
 
   UserType? currentUserType;
 
-  UserType get userType => currentUserType ?? UserType.user;
+  UserType get userType {
+    // If currentUserType is null, try to determine it from current user
+    if (currentUserType == null) {
+      final user = firebaseAuth.currentUser;
+      if (user?.email == 'admin@admin.com') {
+        currentUserType = UserType.admin;
+      } else {
+        currentUserType = UserType.user;
+      }
+    }
+    return currentUserType ?? UserType.user;
+  }
 
   @override
   Future<AppUser?> getCurrentUser() async {
     final firebaseUser = firebaseAuth.currentUser;
 
     if (firebaseUser == null) return null;
+
+    // Always set user type when getting current user
+    await setUserTypeFromEmail();
 
     return AppUser(
       uid: firebaseUser.uid,
@@ -89,6 +103,7 @@ class FirebaseRepo implements AuthRepo {
 
   @override
   Future<void> logout() async {
+    currentUserType = null; // Clear user type on logout
     await firebaseAuth.signOut();
   }
 
@@ -130,5 +145,10 @@ class FirebaseRepo implements AuthRepo {
         currentUserType = UserType.user;
       }
     }
+  }
+
+  /// Initialize user type on app startup
+  Future<void> initializeUserType() async {
+    await setUserTypeFromEmail();
   }
 }

@@ -43,7 +43,7 @@ class _RootAppState extends State<RootApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'app_title'.tr(),
+      title: 'Shopify',
       debugShowCheckedModeBanner: false,
       theme: lightMode,
       darkTheme: darkMode,

@@ -181,7 +181,7 @@ class _HomeWidgetSuccessState extends State<HomeWidgetSuccess> {
       );
     } catch (e) {
       showErrorToast(
-          context: context, message: 'Error navigating to product details: $e');
+          context: context, message: 'error_navigating_product_details'.tr());
     }
   }
 
@@ -224,7 +224,7 @@ class _HomeWidgetSuccessState extends State<HomeWidgetSuccess> {
             actions: [
               IconButton(
                 icon: const Icon(Icons.search),
-                tooltip: 'Search',
+                tooltip: 'search'.tr(),
                 onPressed: () {
                   showSearch(
                     context: context,
@@ -244,7 +244,7 @@ class _HomeWidgetSuccessState extends State<HomeWidgetSuccess> {
                 vertical: 8.0,
               ),
               child: Text(
-                'Shop by Category',
+                'shop_by_category'.tr(),
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -328,7 +328,7 @@ class _HomeWidgetSuccessState extends State<HomeWidgetSuccess> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Featured Products',
+                          'featured_products'.tr(),
                           style: Theme.of(context)
                               .textTheme
                               .titleMedium
@@ -495,8 +495,8 @@ class _HomeWidgetSuccessState extends State<HomeWidgetSuccess> {
                 viewMode == ViewMode.grid ? ViewMode.list : ViewMode.grid;
           },
           tooltip: viewMode == ViewMode.grid
-              ? 'Switch to List View'
-              : 'Switch to Grid View',
+              ? 'switch_to_list_view'.tr()
+              : 'switch_to_grid_view'.tr(),
         ),
       ),
     );

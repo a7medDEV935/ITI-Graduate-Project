@@ -340,7 +340,6 @@ class _CartWidgetState extends State<CartWidget> {
                     "order_summary".tr(),
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      color: Colors.grey[700],
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -370,8 +369,8 @@ class _CartWidgetState extends State<CartWidget> {
               backgroundColor: Colors.green,
             ),
             onPressed: () => Navigator.pop(context, true),
-            child: const Text(
-              "Confirm Checkout",
+            child: Text(
+              "confirm_checkout".tr(),
               style: TextStyle(color: Colors.white),
             ),
           ),
@@ -393,19 +392,20 @@ class _CartWidgetState extends State<CartWidget> {
             context.read<NotificationCubit>().setNotificationScreenOpen(false);
             context.read<NotificationCubit>().incrementNotificationBadge();
             await NotificationService.showNotification(
-              title: 'Order Confirmed! 🎉',
-              body:
-                  'Thank you for your purchase! Your order #${orderId.substring(orderId.length - 8)} has been successfully placed.',
+              title: 'order_confirmed'.tr(),
+              body: 'order_confirmation_message'
+                  .tr(args: [orderId.substring(orderId.length - 8)]),
             );
           } else {
-            showErrorToast(context: context, message: "Enable Notifications");
+            showErrorToast(
+                context: context, message: "enable_notifications".tr());
           }
 
           if (context.mounted) {
             showSuccessToast(
                 context: context,
-                message:
-                    "Order #${orderId.substring(orderId.length - 8)} placed successfully!");
+                message: "order_placed_successfully"
+                    .tr(args: [orderId.substring(orderId.length - 8)]));
           }
         }
       } catch (e) {

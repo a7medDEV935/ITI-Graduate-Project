@@ -76,7 +76,7 @@ class _OrdersWidgetState extends State<OrdersWidget> {
         child: CustomScrollView(
           slivers: [
             SliverAppBar.medium(
-              title: Text('My Orders'),
+              title: Text('my_orders'.tr()),
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               elevation: 2,
               shadowColor: Colors.black.withAlpha(10),
@@ -157,14 +157,14 @@ class _OrdersWidgetState extends State<OrdersWidget> {
                 size: 80, color: Colors.grey[400]),
             const SizedBox(height: 16),
             Text(
-              'No orders yet',
+              'no_orders_yet'.tr(),
               style: theme.textTheme.titleLarge?.copyWith(
                 color: Colors.grey[600],
               ),
             ),
             const SizedBox(height: 8),
             Text(
-              'Start shopping to see your orders here',
+              'start_shopping_to_see_orders'.tr(),
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: Colors.grey[500],
               ),
@@ -211,7 +211,7 @@ class _OrdersWidgetState extends State<OrdersWidget> {
           child: const Icon(Icons.receipt, color: Colors.white, size: 20),
         ),
         title: Text(
-          'Order #${order.id.substring(order.id.length - 8)}',
+          'order_number'.tr(args: [order.id.substring(order.id.length - 8)]),
           style: theme.textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.bold,
           ),
@@ -265,7 +265,7 @@ class _OrdersWidgetState extends State<OrdersWidget> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Order Items (${order.items.length})',
+                  'order_items_count'.tr(args: [order.items.length.toString()]),
                   style: theme.textTheme.titleSmall?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -276,7 +276,7 @@ class _OrdersWidgetState extends State<OrdersWidget> {
                   const Divider(),
                   const SizedBox(height: 8),
                   Text(
-                    'Delivery Address:',
+                    'delivery_address'.tr(),
                     style: theme.textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -343,7 +343,10 @@ class _OrdersWidgetState extends State<OrdersWidget> {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  'Qty: ${item.quantity} × \$${item.productPrice.toStringAsFixed(2)}',
+                  'qty_price'.tr(args: [
+                    item.quantity.toString(),
+                    item.productPrice.toStringAsFixed(2)
+                  ]),
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: Colors.grey[600],
                   ),
@@ -376,7 +379,7 @@ class _OrdersWidgetState extends State<OrdersWidget> {
         children: [
           Expanded(
             child: _buildStatItem(
-              'Total Orders',
+              'total_orders'.tr(),
               '${OrderService.totalOrders}',
               Icons.shopping_bag,
               theme,
@@ -389,7 +392,7 @@ class _OrdersWidgetState extends State<OrdersWidget> {
           ),
           Expanded(
             child: _buildStatItem(
-              'Total Spent',
+              'total_spent'.tr(),
               '\$${OrderService.totalSpent.toStringAsFixed(2)}',
               Icons.attach_money,
               theme,

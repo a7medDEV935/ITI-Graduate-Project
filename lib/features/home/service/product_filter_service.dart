@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../data/models/product_model.dart';
 import '../enums/sort_by_enum.dart';
 
@@ -6,13 +7,13 @@ extension SortByExtension on SortBy {
   String get label {
     switch (this) {
       case SortBy.aToZ:
-        return 'A to Z';
+        return 'sort_a_to_z'.tr();
       case SortBy.zToA:
-        return 'Z to A';
+        return 'sort_z_to_a'.tr();
       case SortBy.priceDescending:
-        return 'Price ↓';
+        return 'sort_price_desc'.tr();
       case SortBy.priceAscending:
-        return 'Price ↑';
+        return 'sort_price_asc'.tr();
     }
   }
 }
@@ -73,4 +74,3 @@ class ProductSortDropdown extends StatelessWidget {
     );
   }
 }
-

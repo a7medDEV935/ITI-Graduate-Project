@@ -1,5 +1,5 @@
 {
-  "app_title": "Shopify",
+  "app_title": "购物应用",
   "discover_products": "Découvrez une large gamme de produits à des prix imbattables",
   "get_orders_delivered": "Recevez vos commandes rapidement et en toute sécurité à votre porte.",
   "shop_with_confidence": "Achetez en toute confiance avec nos méthodes de paiement fiables et sécurisées",
@@ -141,5 +141,23 @@
   "product_updated_successfully": "Produit mis à jour avec succès",
   "failed_to_update_product": "Échec de la mise à jour du produit",
   "update_product": "Mettre à Jour le Produit",
-  "close": "Fermer"
+  "close": "Fermer",
+  "related_products": "Produits connexes",
+  "frequently_asked_questions": "Questions fréquemment posées",
+  "shipping_information": "Informations de livraison",
+  "warranty_question": "Quelle est la période de garantie pour ce produit?",
+  "warranty_answer": "Le produit est livré avec une garantie d'un an couvrant les défauts de fabrication.",
+  "return_question": "Puis-je retourner le produit si je ne suis pas satisfait?",
+  "return_answer": "Oui, vous pouvez retourner le produit dans les 30 jours suivant l'achat pour un remboursement complet, à condition qu'il soit dans son état d'origine.",
+  "shipping_info_text": "Nous offrons la livraison gratuite sur toutes les commandes de plus de 100 $. Les commandes sont généralement traitées dans les 2-3 jours ouvrables.",
+  "add_to_cart": "Ajouter au panier",
+  "update_cart": "Mettre à jour le panier",
+  "added_to_cart": "{} ajouté au panier!",
+  "updated_in_cart": "{} mis à jour dans le panier!",
+  "error": "Erreur",
+  "loading": "Chargement",
+  "in_cart": "Dans le panier",
+  "add": "Ajouter",
+  "error_updating_cart": "Erreur lors de la mise à jour du panier: {}",
+  "error_adding_to_cart": "Erreur lors de l'ajout au panier: {}"
 }

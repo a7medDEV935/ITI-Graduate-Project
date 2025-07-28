@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import '../../../core/di/dependency_injection.dart';
 import '../../../core/widgets/toast.dart';
@@ -29,7 +30,7 @@ class ProductDetailPage extends StatelessWidget {
             ProductDetailWidget(product: product),
             _buildSectionItem(
               context: context,
-              title: 'Related products',
+              title: 'related_products'.tr(),
               child: Container(
                 height: 120,
                 alignment: Alignment.center,
@@ -104,29 +105,29 @@ class ProductDetailPage extends StatelessWidget {
             SizedBox(height: 5),
             _buildSectionItem(
               context: context,
-              title: 'Frequently Asked Questions',
+              title: 'frequently_asked_questions'.tr(),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildFAQ(
                     context,
-                    q: 'What is the warranty period for this product?',
-                    a: 'The product comes with a one-year warranty covering manufacturing defects.',
+                    q: 'warranty_question'.tr(),
+                    a: 'warranty_answer'.tr(),
                   ),
                   const SizedBox(height: 8),
                   _buildFAQ(
                     context,
-                    q: 'Can I return the product if I am not satisfied?',
-                    a: 'Yes, you can return the product within 30 days of purchase for a full refund, provided it is in its original condition.',
+                    q: 'return_question'.tr(),
+                    a: 'return_answer'.tr(),
                   ),
                 ],
               ),
             ),
             _buildSectionItem(
               context: context,
-              title: 'Shipping Information',
+              title: 'shipping_information'.tr(),
               child: Text(
-                'We offer free shipping on all orders over \$100. Orders are typically processed within 2-3 business days.',
+                'shipping_info_text'.tr(),
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
             )
@@ -273,12 +274,15 @@ Widget _buildAddToCartButton(ProductModel product) {
                         ),
                         icon: const Icon(Icons.shopping_cart,
                             color: Colors.white),
-                        label: const Text(
-                          'Update Cart',
+                        label: Text(
+                          'update_cart'.tr(),
                           style: TextStyle(color: Colors.white),
                         ),
                         onPressed: () {
-                         showWarningToast(context: context, message: '${product.title} updated in cart!');
+                          showWarningToast(
+                              context: context,
+                              message:
+                                  'updated_in_cart'.tr(args: [product.title]));
                         },
                       ),
                     ),
@@ -293,13 +297,15 @@ Widget _buildAddToCartButton(ProductModel product) {
                   ),
                   icon: const Icon(Icons.shopping_cart_outlined,
                       color: Colors.white),
-                  label: const Text(
-                    'Add to Cart',
+                  label: Text(
+                    'add_to_cart'.tr(),
                     style: TextStyle(color: Colors.white),
                   ),
                   onPressed: () {
                     cartCubit.addToCart(product);
-                    showSuccessToast(context: context, message: '${product.title} added to cart!');
+                    showSuccessToast(
+                        context: context,
+                        message: 'added_to_cart'.tr(args: [product.title]));
                   },
                 );
         },

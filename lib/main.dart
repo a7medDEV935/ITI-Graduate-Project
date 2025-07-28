@@ -55,7 +55,6 @@ void main() async {
       path: 'assets/l10n',
       saveLocale: true,
       fallbackLocale: const Locale(AppLocale.english),
-      startLocale: const Locale(AppLocale.english),
       child: RootApp(nextScreen: nextScreen),
     ),
   );

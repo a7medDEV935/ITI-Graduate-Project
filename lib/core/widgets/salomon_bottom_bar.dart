@@ -18,6 +18,8 @@ class CustomSalomonBottomBar extends StatelessWidget {
   final void Function(int) onTabChange;
   final UserType userType;
 
+
+
   @override
   Widget build(BuildContext context) {
     final currentLocale = context.locale;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import '../../../../core/widgets/toast.dart';
 import '../../data/models/product_model.dart';
@@ -76,7 +77,7 @@ class ProductCardListTile extends StatelessWidget {
                   return ElevatedButton.icon(
                     onPressed: null,
                     icon: const Icon(Icons.error, size: 16),
-                    label: const Text('Error', style: TextStyle(fontSize: 12)),
+                    label: Text('error'.tr(), style: TextStyle(fontSize: 12)),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red[100],
                       foregroundColor: Colors.red,
@@ -93,8 +94,7 @@ class ProductCardListTile extends StatelessWidget {
                       height: 16,
                       child: CircularProgressIndicator(strokeWidth: 2),
                     ),
-                    label:
-                        const Text('Loading', style: TextStyle(fontSize: 12)),
+                    label: Text('loading'.tr(), style: TextStyle(fontSize: 12)),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.grey[100],
                       foregroundColor: Colors.grey,
@@ -123,7 +123,10 @@ class ProductCardListTile extends StatelessWidget {
                                     }
                                   } catch (e) {
                                     if (context.mounted) {
-                                      showErrorToast(context: context, message: 'Error updating cart: $e');
+                                      showErrorToast(
+                                          context: context,
+                                          message: 'error_updating_cart'
+                                              .tr(args: [e.toString()]));
                                     }
                                   }
                                 },
@@ -156,7 +159,10 @@ class ProductCardListTile extends StatelessWidget {
                                         product, quantity + 1);
                                   } catch (e) {
                                     if (context.mounted) {
-                                     showErrorToast(context: context, message: 'Error updating cart: $e');
+                                      showErrorToast(
+                                          context: context,
+                                          message: 'error_updating_cart'
+                                              .tr(args: [e.toString()]));
                                     }
                                   }
                                 },
@@ -177,7 +183,7 @@ class ProductCardListTile extends StatelessWidget {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            'In Cart',
+                            'in_cart'.tr(),
                             style: TextStyle(
                               fontSize: 10,
                               color: Colors.green[700],
@@ -191,11 +197,17 @@ class ProductCardListTile extends StatelessWidget {
                           try {
                             await cartCubit.addToCart(product);
                             if (context.mounted) {
-                              showSuccessToast(context: context, message: '${product.title} added to cart!');
+                              showSuccessToast(
+                                  context: context,
+                                  message: 'added_to_cart'
+                                      .tr(args: [product.title]));
                             }
                           } catch (e) {
                             if (context.mounted) {
-                             showErrorToast(context: context, message: 'Error adding to cart: $e');
+                              showErrorToast(
+                                  context: context,
+                                  message: 'error_adding_to_cart'
+                                      .tr(args: [e.toString()]));
                             }
                           }
                         },
@@ -211,8 +223,8 @@ class ProductCardListTile extends StatelessWidget {
                           ),
                         ),
                         icon: const Icon(Icons.add_shopping_cart, size: 16),
-                        label: const Text(
-                          'Add',
+                        label: Text(
+                          'add'.tr(),
                           style: TextStyle(fontSize: 12),
                         ),
                       );

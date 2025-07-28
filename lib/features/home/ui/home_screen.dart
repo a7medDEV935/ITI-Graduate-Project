@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:haptic_feedback/haptic_feedback.dart';
 
 import '../../../core/di/dependency_injection.dart';
 import '../../../core/enum/user.dart';
@@ -20,6 +21,13 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
+
+  Future<void> _vibrate() async {
+    final canVibrate = await Haptics.canVibrate();
+    if (canVibrate) {
+      await Haptics.vibrate(HapticsType.medium);
+    }
+  }
 
   @override
   void initState() {
@@ -44,14 +52,21 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: CustomSalomonBottomBar(
         userType: currentUserType,
         selectedIndex: _selectedIndex,
-        onTabChange: (index) {
+        onTabChange: (index) async {
+          await _vibrate();
           setState(() {
             _selectedIndex = index;
           });
           if (index == 1) {
-            context.read<NotificationCubit>().setNotificationScreenOpen(true);
+            if (context.mounted) {
+              context.read<NotificationCubit>().setNotificationScreenOpen(true);
+            }
           } else {
-            context.read<NotificationCubit>().setNotificationScreenOpen(false);
+            if (context.mounted) {
+              context
+                  .read<NotificationCubit>()
+                  .setNotificationScreenOpen(false);
+            }
           }
         },
       ),

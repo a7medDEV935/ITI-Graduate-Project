@@ -30,6 +30,7 @@ class CustomActionSlider extends StatelessWidget {
           controller.success();
           await onSuccess();
           await Future.delayed(const Duration(seconds: 1));
+          controller.reset();
         },
         child: Center(
           child: Text(

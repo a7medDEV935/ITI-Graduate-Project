@@ -283,7 +283,7 @@ class _SettingsScreenState extends State<ProfileWidget> {
       trailing: Switch(
         value: value,
         onChanged: onChanged,
-        activeColor: Colors.blue,
+        activeThumbColor: Colors.blue,
       ),
       contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
     );

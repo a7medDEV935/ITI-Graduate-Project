@@ -1021,7 +1021,7 @@ class _DashBoardWidgetState extends State<DashBoardWidget>
                 ),
                 const SizedBox(height: 16),
                 DropdownButtonFormField<String>(
-                  value: selectedCategory,
+                  initialValue: selectedCategory,
                   decoration: InputDecoration(
                     labelText: 'category'.tr(),
                     border: const OutlineInputBorder(),
@@ -1159,7 +1159,7 @@ class _DashBoardWidgetState extends State<DashBoardWidget>
                 ),
                 const SizedBox(height: 16),
                 DropdownButtonFormField<String>(
-                  value: selectedCategory,
+                  initialValue: selectedCategory,
                   decoration: InputDecoration(
                     labelText: 'category'.tr(),
                     border: const OutlineInputBorder(),
